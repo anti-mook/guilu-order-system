@@ -3927,11 +3927,9 @@
 
     </script>
 
-    <!-- 数据云端同步脚本 -->
+    <!-- 数据云端同步脚本 (D1版本) -->
     <script>
     const DataSync = {
-        _sha: '',
-        _dirtyKeys: new Set(),
         _lastLocalWrite: 0,
         _pushTimer: null,
         _syncing: false,
@@ -3945,7 +3943,6 @@
                 const res = await fetch('/api/data');
                 if (!res.ok) return;
                 const cloudData = await res.json();
-                if (cloudData._sha) this._sha = cloudData._sha;
                 // 更新localStorage（仅更新云端有的key）
                 ['products','salesStaff','orders','admins'].forEach(key => {
                     if (cloudData[key] !== undefined) {
@@ -3971,14 +3968,15 @@
                     orders: JSON.parse(localStorage.getItem('orders') || '[]'),
                     admins: JSON.parse(localStorage.getItem('admins') || '[]'),
                 };
-                if (this._sha) data._sha = this._sha;
                 const res = await fetch('/api/data', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(data)
                 });
                 const result = await res.json();
-                if (result.sha) this._sha = result.sha;
+                if (!result.success) {
+                    console.warn('DataSync push failed:', result.error);
+                }
             } catch(e) {
                 console.warn('DataSync push failed:', e);
             }
