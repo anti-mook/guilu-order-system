@@ -1,0 +1,2589 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>龟鹿药业订单管理系统 - 销售录入</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 基础重置 */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        /* 基础样式 */
+        body {
+            font-family: 'SimHei', '黑体', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #ededed;
+            color: #374151;
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+        
+        /* Flex 工具类 */
+        .flex { display: flex; }
+        .inline-flex { display: inline-flex; }
+        .grid { display: grid; }
+        .hidden { display: none; }
+        .block { display: block; }
+        
+        /* Flex 方向和对齐 */
+        .flex-row { flex-direction: row; }
+        .flex-col { flex-direction: column; }
+        .flex-wrap { flex-wrap: wrap; }
+        .flex-1 { flex: 1; }
+        .items-center { align-items: center; }
+        .items-start { align-items: flex-start; }
+        .items-end { align-items: flex-end; }
+        .justify-center { justify-content: center; }
+        .justify-between { justify-content: space-between; }
+        .justify-end { justify-content: flex-end; }
+        
+        /* Gap 间距 */
+        .gap-1 { gap: 0.25rem; }
+        .gap-2 { gap: 0.5rem; }
+        .gap-3 { gap: 0.75rem; }
+        .gap-4 { gap: 1rem; }
+        .space-y-1 > * + * { margin-top: 0.25rem; }
+        .space-y-2 > * + * { margin-top: 0.5rem; }
+        .space-y-3 > * + * { margin-top: 0.75rem; }
+        .space-y-4 > * + * { margin-top: 1rem; }
+        .space-x-2 > * + * { margin-left: 0.5rem; }
+        .space-x-3 > * + * { margin-left: 0.75rem; }
+        .space-x-4 > * + * { margin-left: 1rem; }
+        
+        /* 文字对齐 */
+        .text-left { text-align: left; }
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        
+        /* 文字颜色 */
+        .text-white { color: white; }
+        .text-black { color: black; }
+        .text-red-500 { color: #ef4444; }
+        .text-red-600 { color: #dc2626; }
+        .text-green-500 { color: #22c55e; }
+        .text-green-600 { color: #16a34a; }
+        .text-green-700 { color: #15803d; }
+        .text-blue-50 { color: #eff6ff; }
+        .text-blue-100 { color: #dbeafe; }
+        .text-blue-500 { color: #3b82f6; }
+        .text-blue-600 { color: #2563eb; }
+        .text-blue-700 { color: #1d4ed8; }
+        .text-orange-600 { color: #ea580c; }
+        .text-purple-700 { color: #7c3aed; }
+        .text-gray-100 { color: #f3f4f6; }
+        .text-gray-200 { color: #e5e7eb; }
+        .text-gray-400 { color: #9ca3af; }
+        .text-gray-500 { color: #6b7280; }
+        .text-gray-600 { color: #6b7280; }
+        .text-gray-700 { color: #374151; }
+        .text-gray-800 { color: #1f2937; }
+        .text-gray-900 { color: #111827; }
+        
+        /* 文字尺寸 */
+        .text-xs { font-size: 0.75rem; line-height: 1rem; }
+        .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+        .text-base { font-size: 1rem; line-height: 1.5rem; }
+        .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+        .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+        .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+        .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+        .text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
+        .text-5xl { font-size: 3rem; line-height: 1; }
+        
+        /* 文字粗细 */
+        .font-medium { font-weight: 500; }
+        .font-semibold { font-weight: 600; }
+        .font-bold { font-weight: 700; }
+        
+        /* 背景颜色 */
+        .bg-white { background-color: white; }
+        .bg-gray-50 { background-color: #f9fafb; }
+        .bg-gray-100 { background-color: #f3f4f6; }
+        .bg-gray-200 { background-color: #e5e7eb; }
+        .bg-gray-600 { background-color: #4b5563; }
+        .bg-blue-50 { background-color: #eff6ff; }
+        .bg-blue-100 { background-color: #dbeafe; }
+        .bg-blue-600 { background-color: #2563eb; }
+        .bg-green-100 { background-color: #dcfce7; }
+        .bg-green-500 { background-color: #22c55e; }
+        .bg-purple-100 { background-color: #f3e8ff; }
+        .bg-red-50 { background-color: #fef2f2; }
+        .bg-red-100 { background-color: #fee2e2; }
+        .bg-red-500 { background-color: #ef4444; }
+        .bg-red-600 { background-color: #dc2626; }
+        
+        /* 边框 */
+        .border { border-width: 1px; border-style: solid; }
+        .border-0 { border-width: 0; }
+        .border-2 { border-width: 2px; }
+        .border-t { border-top-width: 1px; border-top-style: solid; }
+        .border-b { border-bottom-width: 1px; border-bottom-style: solid; }
+        .border-gray-200 { border-color: #e5e7eb; }
+        .border-gray-300 { border-color: #d1d5db; }
+        
+        /* 边框圆角 */
+        .rounded { border-radius: 0.25rem; }
+        .rounded-sm { border-radius: 0.125rem; }
+        .rounded-lg { border-radius: 0.5rem; }
+        .rounded-xl { border-radius: 0.75rem; }
+        .rounded-full { border-radius: 9999px; }
+        .rounded-t-lg { border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem; }
+        
+        /* 内边距 */
+        .p-0 { padding: 0; }
+        .p-1 { padding: 0.25rem; }
+        .p-2 { padding: 0.5rem; }
+        .p-3 { padding: 0.75rem; }
+        .p-4 { padding: 1rem; }
+        .p-5 { padding: 1.25rem; }
+        .p-6 { padding: 1.5rem; }
+        .p-8 { padding: 2rem; }
+        .px-0 { padding-left: 0; padding-right: 0; }
+        .px-1 { padding-left: 0.25rem; padding-right: 0.25rem; }
+        .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+        .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+        .px-4 { padding-left: 1rem; padding-right: 1rem; }
+        .px-5 { padding-left: 1.25rem; padding-right: 1.25rem; }
+        .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+        .px-8 { padding-left: 2rem; padding-right: 2rem; }
+        .py-0 { padding-top: 0; padding-bottom: 0; }
+        .py-0\.5 { padding-top: 0.125rem; padding-bottom: 0.125rem; }
+        .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+        .py-1\.5 { padding-top: 0.375rem; padding-bottom: 0.375rem; }
+        .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+        .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+        .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+        .py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+        .py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+        .pt-3 { padding-top: 0.75rem; }
+        .pt-4 { padding-top: 1rem; }
+        .pb-4 { padding-bottom: 1rem; }
+        .pr-4 { padding-right: 1rem; }
+        .pl-10 { padding-left: 2.5rem; }
+        
+        /* 外边距 */
+        .m-0 { margin: 0; }
+        .m-auto { margin: auto; }
+        .mx-0 { margin-left: 0; margin-right: 0; }
+        .mx-4 { margin-left: 1rem; margin-right: 1rem; }
+        .mx-auto { margin-left: auto; margin-right: auto; }
+        .my-0 { margin-top: 0; margin-bottom: 0; }
+        .my-2 { margin-top: 0.5rem; margin-bottom: 0.5rem; }
+        .mt-0 { margin-top: 0; }
+        .mt-1 { margin-top: 0.25rem; }
+        .mt-2 { margin-top: 0.5rem; }
+        .mt-3 { margin-top: 0.75rem; }
+        .mt-4 { margin-top: 1rem; }
+        .mt-5 { margin-top: 1.25rem; }
+        .mt-6 { margin-top: 1.5rem; }
+        .mb-0 { margin-bottom: 0; }
+        .mb-1 { margin-bottom: 0.25rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-3 { margin-bottom: 0.75rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .mb-8 { margin-bottom: 2rem; }
+        .ml-0 { margin-left: 0; }
+        .ml-1 { margin-left: 0.25rem; }
+        .ml-2 { margin-left: 0.5rem; }
+        .ml-3 { margin-left: 0.75rem; }
+        .ml-4 { margin-left: 1rem; }
+        .mr-0 { margin-right: 0; }
+        .mr-1 { margin-left: 0.25rem; }
+        .mr-2 { margin-left: 0.5rem; }
+        .mr-3 { margin-left: 0.75rem; }
+        .mr-4 { margin-left: 1rem; }
+        .ml-auto { margin-left: auto; }
+        .mr-auto { margin-right: auto; }
+        
+        /* 宽度和高度 */
+        .w-full { width: 100%; }
+        .w-auto { width: auto; }
+        .w-8 { width: 2rem; }
+        .w-16 { width: 4rem; }
+        .w-24 { width: 6rem; }
+        .w-32 { width: 8rem; }
+        .h-full { height: 100%; }
+        .h-auto { height: auto; }
+        .h-8 { height: 2rem; }
+        .h-14 { height: 3.5rem; }
+        .h-16 { height: 4rem; }
+        .h-24 { height: 6rem; }
+        .min-h-screen { min-height: 100vh; }
+        .min-w-0 { min-width: 0; }
+        .max-w-md { max-width: 28rem; }
+        .max-w-sm { max-width: 24rem; }
+        .max-w-lg { max-width: 32rem; }
+        .max-w-xl { max-width: 36rem; }
+        .max-w-2xl { max-width: 42rem; }
+        .max-w-3xl { max-width: 48rem; }
+        .max-w-6xl { max-width: 72rem; }
+        .max-w-full { max-width: 100%; }
+        .max-h-60vh { max-height: 60vh; }
+        
+        /* 定位 */
+        .relative { position: relative; }
+        .absolute { position: absolute; }
+        .fixed { position: fixed; }
+        .sticky { position: sticky; }
+        .top-0 { top: 0; }
+        .top-4 { top: 1rem; }
+        .right-0 { right: 0; }
+        .right-3 { right: 0.75rem; }
+        .right-4 { right: 1rem; }
+        .bottom-0 { bottom: 0; }
+        .bottom-100 { bottom: 100%; }
+        .left-0 { left: 0; }
+        .left-3 { left: 0.75rem; }
+        .left-50 { left: 50%; }
+        .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+        
+        /* z-index */
+        .z-10 { z-index: 10; }
+        .z-50 { z-index: 50; }
+        .z-100 { z-index: 100; }
+        
+        /* 溢出 */
+        .overflow-hidden { overflow: hidden; }
+        .overflow-y-auto { overflow-y: auto; }
+        
+        /* 指针事件 */
+        .cursor-pointer { cursor: pointer; }
+        .cursor-not-allowed { cursor: not-allowed; }
+        
+        /* 透明度 */
+        .opacity-0 { opacity: 0; }
+        .opacity-50 { opacity: 0.5; }
+        .opacity-90 { opacity: 0.9; }
+        
+        /* 过渡动画 */
+        .transition { transition: all 0.3s ease; }
+        .transition-none { transition: none; }
+        
+        /* 变换 */
+        .translate-y-0 { transform: translateY(0); }
+        .translate-y-1px { transform: translateY(1px); }
+        .translate-x-100 { transform: translateX(100%); }
+        .translate-x-50 { transform: translateX(-50%); }
+        .scale-1 { transform: scale(1); }
+        .scale-1\.1 { transform: scale(1.1); }
+        
+        /* 轮廓 */
+        .outline-none { outline: none; }
+        
+        /* 分割线 */
+        .divide-y > * + * { border-top-width: 1px; border-top-style: solid; border-color: inherit; }
+        .divide-gray-100 > * + * { border-color: #f3f4f6; }
+        
+        /* 禁用状态 */
+        .disabled\:opacity-50:disabled { opacity: 0.5; }
+        .disabled\:cursor-not-allowed:disabled { cursor: not-allowed; }
+        
+        /* 网格布局 */
+        .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .md\:grid-cols-4 { @media (min-width: 768px) { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+        
+        /* 响应式最小宽度 */
+        @media (min-width: 768px) {
+            .md\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        }
+        
+        /* ==================== 美化后的样式 ==================== */
+        
+        /* 登录页面样式 - 保持不变 */
+        .login-bg {
+            background-image: url('Background2.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        /* 用户头像圆形背景 */
+        .user-avatar-bg {
+            background: #2960d0;
+        }
+        
+        /* 导航栏 */
+        .nav-bar {
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        /* 标题区域 - 蓝色 */
+        .header-blue-gradient {
+            background: #6299ff;
+        }
+        
+        /* 蓝色主题按钮 */
+        .btn-primary-color {
+            background: #2960d0;
+            color: white;
+            cursor: pointer;
+            border-radius: 6px;
+        }
+        .btn-primary-color:hover {
+            background: #1e4fa8;
+        }
+        
+        /* 金色按钮（登录页面专用） */
+        .btn-gold {
+            background: #2960d0;
+            transition: all 0.3s ease;
+            border-radius: 6px;
+        }
+        .btn-gold:hover {
+            background: #1e4fa8;
+            transform: translateY(-1px);
+        }
+        
+        /* 聚焦样式 */
+        .focus-blue:focus,
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #2960d0 !important;
+            outline: none !important;
+        }
+        
+        /* 模态框遮罩 */
+        .modal-overlay {
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        /* 动画 */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .toast {
+            animation: slideIn 0.3s ease-out, fadeOut 0.3s ease-in 2.7s forwards;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        
+        /* 庆祝动画 */
+        @keyframes celebrate {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .celebrate-anim {
+            animation: celebrate 0.5s ease-out;
+        }
+        
+        /* 商品行动画 */
+        .item-row {
+            animation: fadeIn 0.2s ease-out;
+        }
+        
+        /* 删除按钮动画 */
+        .remove-btn {
+            transition: all 0.2s;
+            border-radius: 6px;
+            color: #ef4444;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 6px 10px;
+        }
+        .remove-btn:hover {
+            background: #fef2f2;
+            transform: scale(1.05);
+        }
+        
+        /* 密码输入框样式 */
+        .password-input-wrapper {
+            position: relative;
+        }
+        .password-input-wrapper input {
+            padding-right: 40px;
+        }
+        
+        /* 用户下拉菜单 */
+        .user-dropdown {
+            position: relative;
+        }
+        .user-dropdown-menu {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            margin-top: 8px;
+            min-width: 160px;
+            z-index: 100;
+            border-radius: 8px;
+        }
+        
+        /* 状态标签 */
+        .status-normal { background-color: #dcfce7; color: #166534; }
+        .status-appealed { background-color: #ffedd5; color: #c2410c; }
+        .status-processed { background-color: #d1fae5; color: #065f46; }
+        .status-voided { background-color: #f3f4f6; color: #6b7280; }
+        .status-refunded { background-color: #fef3c7; color: #92400e; }
+        .status-refund-cancelled { background-color: #e0f2fe; color: #0369a1; }
+        .status-deleted { background-color: #fee2e2; color: #dc2626; }
+        
+        /* 回执提示框 */
+        .reply-tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-bottom: 8px;
+            padding: 8px 12px;
+            background: #D4A843;
+            color: white;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 10;
+        }
+        .reply-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: #6299ff;
+        }
+        .reply-tooltip {
+            display: none;
+        }
+        .reply-trigger:hover .reply-tooltip {
+            display: block;
+        }
+        
+        /* ==================== 核心表单样式 - 统一美化 ==================== */
+        
+        /* 页面容器 - 最大宽度960px居中 */
+        .page-container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+        
+        /* 卡片通用样式 - 扁平化无阴影 */
+        .card {
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+        }
+        
+        /* 卡片标题栏 */
+        .card-header {
+            background: #6299ff;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-header h2 {
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .card-header h2 i {
+            margin-right: 8px;
+        }
+        
+        /* 卡片内容区 */
+        .card-body {
+            padding: 20px;
+        }
+        
+        /* 表单区域样式 - 统一section */
+        .form-section {
+            padding: 16px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .form-section:last-child {
+            border-bottom: none;
+        }
+        
+        /* Section标题 - 统一样式 */
+        .form-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+        .form-section-title i {
+            margin-right: 8px;
+            color: #2960d0;
+            font-size: 14px;
+        }
+        
+        /* 统一label样式 */
+        .form-label {
+            font-size: 14px;
+            color: #374151;
+            font-weight: 500;
+            margin-bottom: 4px;
+            display: block;
+        }
+        .form-label .required {
+            color: #ef4444;
+        }
+        
+        /* 统一输入框样式 */
+        .form-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #374151;
+            background: white;
+            transition: border-color 0.2s;
+        }
+        .form-input:focus {
+            border-color: #2960d0;
+            outline: none;
+        }
+        .form-input::placeholder {
+            color: #9ca3af;
+        }
+        
+        /* 统一select样式 */
+        .form-select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #374151;
+            background: white;
+            transition: border-color 0.2s;
+            cursor: pointer;
+        }
+        .form-select:focus {
+            border-color: #2960d0;
+            outline: none;
+        }
+        
+        /* 紧凑表单行 */
+        .compact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+        
+        /* 商品列表行 */
+        .item-row {
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 8px;
+        }
+        .item-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        /* 商品行内的label - 与基本信息统一 */
+        .item-row .form-label {
+            font-size: 14px;
+            color: #374151;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        /* 商品行内的控件 - 字体大小统一 */
+        .item-row .form-select,
+        .item-row .form-input {
+            font-size: 14px;
+            color: #374151;
+        }
+        
+        /* 商品删除按钮 */
+        .item-delete-btn {
+            padding: 8px 12px;
+            color: #ef4444;
+            background: transparent;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .item-delete-btn:hover {
+            background: #fef2f2;
+        }
+        
+        /* 订单卡片样式 */
+        .order-card {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        .order-card:last-child {
+            border-bottom: none;
+        }
+        .order-card:hover {
+            background-color: #fafafa;
+        }
+        .order-card-header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .order-card-meta {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+        
+        /* 商品列表头部区域 */
+        .items-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        /* Toast容器 */
+        .toast-container {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        /* 登录表单特殊样式 */
+        .login-form-group {
+            margin-bottom: 1rem;
+        }
+        
+        /* 分页按钮禁用状态 */
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* hover效果 */
+        .hover\:bg-gray-50:hover { background-color: #f9fafb; }
+        .hover\:bg-gray-100:hover { background-color: #f3f4f6; }
+        .hover\:bg-blue-50:hover { background-color: #eff6ff; }
+        .hover\:bg-red-50:hover { background-color: #fef2f2; }
+        .hover\:text-gray-200:hover { color: #e5e7eb; }
+        .hover\:text-blue-100:hover { color: #dbeafe; }
+        .hover\:opacity-90:hover { opacity: 0.9; }
+        
+        /* 输入框占位符样式 */
+        input::placeholder,
+        textarea::placeholder {
+            color: #9ca3af;
+        }
+        .placeholder-white\/60::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        /* 白色占位符 */
+        input.text-white::placeholder,
+        .text-white input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        /* 表格内input/select白色文字样式 */
+        input.text-white,
+        select.text-white {
+            color: white;
+        }
+        
+        /* ==================== 筛选栏样式 - 白色紧凑 ==================== */
+        .filter-bar {
+            background: #6299ff;
+            padding: 12px 20px;
+            border-bottom: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .filter-label {
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .filter-input {
+            border: 1px solid white;
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 14px;
+            background: white;
+            color: #374151;
+            outline: none;
+            width: 120px;
+        }
+        .filter-input:focus {
+            border-color: #2960d0;
+            outline: none;
+        }
+        .filter-input::placeholder {
+            color: #9ca3af;
+        }
+        
+        .filter-select {
+            border: 1px solid white;
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 14px;
+            background: white;
+            color: #374151;
+            outline: none;
+            cursor: pointer;
+            min-width: 80px;
+        }
+        .filter-select:focus {
+            border-color: #2960d0;
+            outline: none;
+        }
+        
+        /* 筛选按钮样式 - 白色标签 */
+        .filter-btn {
+            background: white;
+            color: #2960d0;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+        .filter-btn:hover {
+            background: #f0f4ff;
+        }
+        
+        /* 申诉按钮 - 橙色圆角 */
+        .appeal-btn {
+            background: #ea580c;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .appeal-btn:hover {
+            background: #c2410c;
+        }
+        
+        /* 只读输入框 */
+        input:read-only,
+        input[readonly] {
+            background-color: #f3f4f6;
+            color: #6b7280;
+            cursor: not-allowed;
+        }
+        
+        /* 图片 */
+        .object-contain { object-fit: contain; }
+        .object-cover { object-fit: cover; }
+        
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a1a1a1;
+        }
+
+        /* 隐藏浏览器默认的密码显示按钮 */
+        input::-ms-reveal,
+        input::-ms-clear {
+            display: none;
+        }
+        input[type="password"]::-webkit-credentials-auto-fill-button,
+        input[type="password"]::-webkit-caps-lock-indicator {
+            display: none;
+        }
+        #salesLoginPassword::-webkit-inner-spin-button,
+        #salesLoginPassword::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        /* ==================== 统一按钮样式 ==================== */
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: #2960d0;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #1e4fa8;
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+        .btn-secondary:hover {
+            background: #f9fafb;
+        }
+        
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+        
+        /* ==================== 金额显示样式 ==================== */
+        .price-display {
+            font-size: 18px;
+            font-weight: 700;
+            color: #dc2626;
+        }
+        
+        /* ==================== 间距工具类 ==================== */
+        .gap-section {
+            gap: 16px;
+        }
+        .gap-element {
+            gap: 8px;
+        }
+        
+        /* ==================== UI调整样式 ==================== */
+        
+        /* 基本信息区域 - 去掉灰色底 */
+        .basic-info-bg {
+        }
+        .basic-info-bg input,
+        .basic-info-bg select {
+            background-color: white;
+        }
+        .basic-info-bg input:focus,
+        .basic-info-bg select:focus {
+            background-color: white;
+        }
+        
+        /* 新建订单卡片顶部间距 */
+        .order-form-card {
+            margin-top: 22px;
+        }
+        
+        /* 搜索框加长样式 */
+        .search-input-wide {
+            width: 200px !important;
+        }
+        
+        /* 用户下拉菜单美化 */
+        .user-dropdown-btn {
+            background: rgba(41, 96, 208, 0.08);
+            border: 1px solid rgba(41, 96, 208, 0.2);
+            border-radius: 24px;
+            padding: 4px 12px 4px 4px;
+            transition: all 0.2s ease;
+        }
+        .user-dropdown-btn:hover {
+            background: rgba(41, 96, 208, 0.15);
+            border-color: rgba(41, 96, 208, 0.4);
+        }
+        
+        /* 下拉菜单美化 */
+        .user-dropdown-menu {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            margin-top: 8px;
+            min-width: 160px;
+            z-index: 100;
+            border-radius: 10px;
+            background: #fff;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+            padding: 4px 0;
+        }
+        .user-dropdown-menu button {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 10px 16px !important;
+            border: none;
+            background: none;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.15s;
+            gap: 10px;
+        }
+        .user-dropdown-menu button:hover {
+            background-color: #f0f5ff !important;
+        }
+        .user-dropdown-menu button i {
+            width: 18px;
+            text-align: center;
+            font-size: 14px;
+        }
+        .user-dropdown-menu button:first-child i {
+            color: #2960d0;
+        }
+        .user-dropdown-menu button:last-child i {
+            color: #ef4444;
+        }
+        .user-dropdown-menu button:first-child:hover i {
+            color: #1d4ed8;
+        }
+        .user-dropdown-menu button:last-child:hover {
+            background-color: #fef2f2 !important;
+        }
+        .user-dropdown-menu button:last-child:hover i {
+            color: #dc2626;
+        }
+    </style>
+</head>
+<body>
+    <!-- 登录页面 -->
+    <div id="loginPage" class="min-h-screen flex items-center justify-center login-bg">
+        <div class="bg-white rounded-lg border border-gray-200 p-8 w-full max-w-md fade-in">
+            <div class="text-center mb-8">
+                <div class="flex justify-center mb-4">
+                    <img src="logo2_1777967775535_0_9gcr.png" alt="龟鹿药业" class="w-16 h-16 object-contain">
+                </div>
+                <h1 class="text-xl font-bold" style="color:#1f2937;margin-top:8px">龟鹿药业私域录单系统</h1>
+            </div>
+            <form id="salesLoginForm">
+                <div class="login-form-group">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">账号</label>
+                    <div class="relative">
+                        <span class="absolute left-3 text-gray-400" style="top:50%;transform:translateY(-50%)">
+                            <i class="fas fa-user"></i>
+                        </span>
+                        <input type="text" id="salesLoginAccount" required class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg outline-none transition" placeholder="请输入账号">
+                    </div>
+                </div>
+                <div class="login-form-group">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">密码</label>
+                    <div class="relative">
+                        <span class="absolute left-3 text-gray-400" style="top:50%;transform:translateY(-50%)">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                        <input type="password" id="salesLoginPassword" required class="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg outline-none transition" placeholder="请输入密码" style="padding-right:2.5rem" data-empty="true">
+                        <span class="absolute right-3 text-gray-400 cursor-pointer" style="top:50%;transform:translateY(-50%)" onclick="toggleLoginPassword()">
+                            <i class="fas fa-eye" id="loginPasswordToggle"></i>
+                        </span>
+                    </div>
+                </div>
+                <button type="submit" class="w-full btn-gold text-white font-bold py-3 rounded-lg transition border-0">
+                    <i class="fas fa-sign-in-alt mr-2"></i>登录
+                </button>
+            </form>
+            <p id="salesLoginError" class="text-red-500 text-center mt-4 hidden"></p>
+
+        </div>
+    </div>
+
+    <!-- 主内容区域（登录后显示） -->
+    <div id="mainContent" class="hidden">
+        <!-- 顶部导航栏 -->
+        <nav class="nav-bar sticky top-0 z-50">
+            <div class="page-container">
+                <div class="flex justify-between items-center h-14">
+                    <!-- 标题区域 - 左侧，与下方卡片左边缘齐平 -->
+                    <div class="flex items-center">
+                        <img src="logo2_1777967775535_0_9gcr.png" alt="龟鹿药业" class="h-8 w-auto" style="margin-right:12px">
+                        <h1 class="text-base font-bold" style="color:#1f2937">龟鹿药业私域录单系统</h1>
+                    </div>
+                    <!-- 用户下拉菜单 - 右侧，不超过卡片宽度 -->
+                    <div class="flex items-center">
+                        <div class="user-dropdown">
+                            <button onclick="toggleUserDropdown()" class="user-dropdown-btn flex items-center transition" style="--tw-space-x-reverse:0">
+                                <div class="w-8 h-8 user-avatar-bg rounded-full flex items-center justify-center">
+                                    <i class="fas fa-user text-white"></i>
+                                </div>
+                                <span id="currentUserName" class="font-medium" style="color:#374151"></span>
+                                <i class="fas fa-chevron-down text-xs ml-2" style="color:#6b7280"></i>
+                            </button>
+                            <div id="userDropdownMenu" class="hidden user-dropdown-menu">
+                                <button onclick="openProfileModal()" class="w-full text-left text-gray-700 transition flex items-center">
+                                    <i class="fas fa-user-cog"></i>修改资料
+                                </button>
+                                <button onclick="confirmLogout()" class="w-full text-left text-red-600 transition flex items-center">
+                                    <i class="fas fa-sign-out-alt"></i>退出登录
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 主内容区域 -->
+        <div class="page-container py-6 gap-section flex flex-col">
+            <!-- 订单表单卡片 -->
+            <div class="card fade-in order-form-card">
+                <div class="card-header">
+                    <h2>
+                        <i class="fas fa-file-alt"></i>新建订单
+                    </h2>
+                </div>
+                
+                <form id="orderForm" class="card-body">
+                    <!-- 基本信息 -->
+                    <div class="form-section basic-info-bg">
+                        <h3 class="form-section-title">
+                            <i class="fas fa-info-circle"></i>基本信息
+                        </h3>
+                        <div class="flex flex-wrap items-center gap-3">
+                            <div class="flex-1" style="min-width:180px">
+                                <label class="form-label">订单编号 <span class="required">*</span></label>
+                                <input type="text" id="orderNo" required class="form-input" placeholder="请输入订单编号">
+                            </div>
+                            <div class="flex items-center text-gray-400"></div>
+                            <div class="flex-1" style="min-width:180px">
+                                <label class="form-label">购买日期 <span class="required">*</span></label>
+                                <input type="date" id="purchaseDate" required class="form-input">
+                            </div>
+                            <div class="flex items-center text-gray-400"></div>
+                            <div class="flex-1" style="min-width:180px">
+                                <label class="form-label">订单类型 <span class="required">*</span></label>
+                                <select id="orderType" required class="form-select">
+                                    <option value="内购">内购</option>
+                                    <option value="纯销">纯销</option>
+                                </select>
+                            </div>
+                            <div class="flex items-center text-gray-400"></div>
+                            <div class="flex-1" style="min-width:180px">
+                                <label class="form-label">客户渠道 <span class="required">*</span></label>
+                                <select id="orderChannel" required class="form-select">
+                                    <option value="">请选择</option>
+                                    <option value="百度推广">百度推广</option>
+                                    <option value="小红书推广">小红书推广</option>
+                                    <option value="视频号推广">视频号推广</option>
+                                    <option value="公众号推广">公众号推广</option>
+                                    <option value="抖音推广">抖音推广</option>
+                                    <option value="抖音包裹卡">抖音包裹卡</option>
+                                    <option value="淘系包裹卡">淘系包裹卡</option>
+                                    <option value="京东包裹卡">京东包裹卡</option>
+                                    <option value="客户转介绍">客户转介绍</option>
+                                    <option value="小程序获客">小程序获客</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- 录入人（隐藏，但值会自动填充） -->
+                        <input type="hidden" id="salesPerson">
+                    </div>
+
+                    <!-- 商品列表 -->
+                    <div class="form-section">
+                        <div class="items-header">
+                            <h3 class="form-section-title mb-0">
+                                <i class="fas fa-boxes"></i>商品列表
+                            </h3>
+                            <button type="button" onclick="addItemRow()" class="btn btn-primary">
+                                <i class="fas fa-plus"></i>增加商品
+                            </button>
+                        </div>
+                        
+                        <div id="itemsContainer" class="space-y-2 mt-3">
+                            <!-- 商品行将通过JS动态渲染 -->
+                        </div>
+                        
+                        <div id="emptyItemsHint" class="text-center py-6 text-gray-500 hidden">
+                            <i class="fas fa-shopping-basket text-3xl mb-2"></i>
+                            <p>暂无商品，请点击"增加商品"添加</p>
+                        </div>
+                    </div>
+
+                    <!-- 订单金额 -->
+                    <div class="form-section basic-info-bg">
+                        <h3 class="form-section-title">
+                            <i class="fas fa-dollar-sign"></i>订单金额
+                        </h3>
+                        <div class="compact-grid" style="max-width: 400px;">
+                            <div>
+                                <label class="form-label">订单总价 <span class="required">*</span></label>
+                                <div class="relative">
+                                    <span class="absolute left-3 text-gray-500" style="top:50%;transform:translateY(-50%)">¥</span>
+                                    <input type="number" step="0.01" id="totalPrice" required class="form-input font-semibold" style="padding-left:28px" placeholder="0.00">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 提交按钮 -->
+                    <div class="flex justify-end space-x-3 pt-3">
+                        <button type="button" onclick="resetForm()" class="btn btn-secondary">
+                            <i class="fas fa-undo"></i>重置表单
+                        </button>
+                        <button type="button" onclick="showOrderConfirmModal()" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i>提交订单
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 订单列表卡片 -->
+            <div class="card fade-in">
+                <div class="filter-bar">
+                    <div style="display:flex;flex-direction:column;gap:8px;flex:1">
+                        <h2 class="text-base font-semibold text-white flex items-center" style="margin-bottom:4px">
+                            <i class="fas fa-list" style="margin-right: 8px;"></i>已录入订单
+                        </h2>
+                        <!-- 第一行：搜索+日期 -->
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="filter-label">搜索</span>
+                            <input type="text" id="filterOrderNo" oninput="applyRealtimeFilter()" class="filter-input search-input-wide" placeholder="订单编号">
+                            
+                            <span class="filter-label">日期</span>
+                            <input type="date" id="filterDateFrom" onchange="applyRealtimeFilter()" class="filter-select" style="padding:4px 8px">
+                            <span class="filter-label" style="padding:0 2px">至</span>
+                            <input type="date" id="filterDateTo" onchange="applyRealtimeFilter()" class="filter-select" style="padding:4px 8px">
+                        </div>
+                        <!-- 第二行：产品+渠道+类型 -->
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="filter-label">产品</span>
+                            <select id="filterProduct" onchange="applyRealtimeFilter()" class="filter-select">
+                                <option value="">全部</option>
+                            </select>
+                            
+                            <span class="filter-label">渠道</span>
+                            <select id="filterChannel" onchange="applyRealtimeFilter()" class="filter-select">
+                                <option value="">全部</option>
+                            </select>
+                            
+                            <span class="filter-label">类型</span>
+                            <select id="filterOrderType" onchange="applyRealtimeFilter()" class="filter-select">
+                                <option value="">全部</option>
+                                <option value="内购">内购</option>
+                                <option value="纯销">纯销</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- 重置按钮 - 右侧 -->
+                    <div style="display:flex;align-items:center">
+                        <button onclick="resetRealtimeFilter()" class="filter-btn">
+                            <i class="fas fa-undo mr-1"></i>重置
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="orderList" class="divide-y divide-gray-100">
+                    <!-- 订单列表将通过JS动态渲染 -->
+                </div>
+
+                <!-- 分页 -->
+                <div id="pagination" class="px-4 py-3 bg-gray-50 border-t flex flex-wrap justify-between items-center gap-3">
+                    <span id="pageInfo" class="text-sm text-gray-600"></span>
+                    <div class="flex">
+                        <button onclick="prevPage()" id="prevBtn" class="px-3 py-1.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition text-sm" disabled>
+                            <i class="fas fa-chevron-left mr-1"></i>上一页
+                        </button>
+                        <button onclick="nextPage()" id="nextBtn" class="px-3 py-1.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition text-sm ml-2" disabled>
+                            下一页<i class="fas fa-chevron-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="orderEmpty" class="text-center py-8 text-gray-500 hidden">
+                    <i class="fas fa-inbox text-4xl mb-3"></i>
+                    <p class="text-base">暂无订单数据</p>
+                    <p class="text-sm mt-1">请填写上方表单提交订单</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 修改资料模态框 -->
+    <div id="profileModal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-overlay absolute inset-0" onclick="closeProfileModal()"></div>
+        <div class="relative z-10 flex items-center justify-center min-h-screen p-4" style="background:transparent">
+            <div class="bg-white border border-gray-200 w-full max-w-md fade-in" style="border-radius:16px;overflow:hidden">
+                <div class="header-blue-gradient text-white px-6 py-4 flex justify-between items-center">
+                    <h3 class="text-base font-bold"><i class="fas fa-user-cog" style="margin-right:8px"></i>修改资料</h3>
+                    <button onclick="closeProfileModal()" style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.2);border:none;color:white;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s" onmouseover="this.style.background='rgba(255,255,255,0.35)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                        <i class="fas fa-times" style="font-size:14px"></i>
+                    </button>
+                </div>
+                <div class="p-6">
+                    <form id="profileForm">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2">账号</label>
+                                <input type="text" id="profileAccount" readonly class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-600 cursor-not-allowed">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2">姓名</label>
+                                <input type="text" id="profileName" readonly class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-600 cursor-not-allowed">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2">旧密码 <span class="text-red-500">*</span></label>
+                                <div class="password-input-wrapper">
+                                    <input type="password" id="oldPassword" required class="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2">新密码 <span class="text-red-500">*</span></label>
+                                <div class="password-input-wrapper">
+                                    <input type="password" id="newPassword" required class="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2">确认新密码 <span class="text-red-500">*</span></label>
+                                <div class="password-input-wrapper">
+                                    <input type="password" id="confirmPassword" required class="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="px-6 py-4 bg-gray-50 border-t flex justify-end space-x-3">
+                    <button type="button" onclick="closeProfileModal()" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition">
+                        取消
+                    </button>
+                    <button type="button" onclick="saveProfile()" class="px-4 py-2 btn-primary-color text-white rounded-lg transition border-0">
+                        保存
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 订单确认模态框 -->
+    <div id="confirmModal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-overlay absolute inset-0" onclick="closeConfirmModal()"></div>
+        <div class="relative z-10 flex items-center justify-center min-h-screen p-4" style="background:transparent">
+            <div class="bg-white border border-gray-200 w-full max-w-lg fade-in" style="border-radius:16px;overflow:hidden">
+                <div class="header-blue-gradient text-white px-6 py-4 flex justify-between items-center">
+                    <h3 class="text-base font-bold"><i class="fas fa-clipboard-check" style="margin-right:8px"></i>确认订单信息</h3>
+                    <button onclick="closeConfirmModal()" style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.2);border:none;color:white;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s" onmouseover="this.style.background='rgba(255,255,255,0.35)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                        <i class="fas fa-times" style="font-size:14px"></i>
+                    </button>
+                </div>
+                <div class="p-6" style="max-height:60vh;overflow-y:auto;">
+                    <div id="confirmOrderContent" class="space-y-4">
+                        <!-- 订单信息将通过JS渲染 -->
+                    </div>
+                </div>
+                <div class="px-6 py-4 bg-gray-50 border-t flex justify-end space-x-3">
+                    <button type="button" onclick="closeConfirmModal()" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition">
+                        取消
+                    </button>
+                    <button type="button" onclick="confirmSubmit()" class="px-4 py-2 btn-primary-color text-white rounded-lg transition border-0">
+                        <i class="fas fa-check mr-2"></i>确认提交
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 成功提示模态框 -->
+    <div id="successModal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-overlay absolute inset-0"></div>
+        <div class="relative z-10 flex items-center justify-center min-h-screen p-4" style="background:transparent">
+            <div class="bg-white border border-gray-200 w-full max-w-sm fade-in text-center celebrate-anim" style="border-radius:16px;overflow:hidden">
+                <div class="p-8">
+                    <div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-check-circle text-5xl text-green-500"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800">大吉大利 恭喜开单</h3>
+                </div>
+                <div class="px-6 py-4 bg-gray-50 border-t">
+                    <button type="button" onclick="closeSuccessModal()" class="w-full px-4 py-2 btn-primary-color text-white rounded-lg transition border-0">
+                        继续录入
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 申诉模态框 -->
+    <div id="appealModal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-overlay absolute inset-0" onclick="closeAppealModal()"></div>
+        <div class="relative z-10 flex items-center justify-center min-h-screen p-4" style="background:transparent">
+            <div class="bg-white border border-gray-200 w-full max-w-md fade-in" style="border-radius:16px;overflow:hidden">
+                <div class="header-blue-gradient text-white px-6 py-4 flex justify-between items-center">
+                    <h3 class="text-base font-bold"><i class="fas fa-exclamation-circle" style="margin-right:8px"></i>提交申诉</h3>
+                    <button onclick="closeAppealModal()" style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.2);border:none;color:white;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s" onmouseover="this.style.background='rgba(255,255,255,0.35)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                        <i class="fas fa-times" style="font-size:14px"></i>
+                    </button>
+                </div>
+                <div class="p-6">
+                    <form id="appealForm">
+                        <input type="hidden" id="appealOrderId">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2">申诉原因 <span class="text-red-500">*</span></label>
+                                <select id="appealType" required class="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none">
+                                    <option value="">请选择</option>
+                                    <option value="信息录错">信息录错</option>
+                                    <option value="客户退款">客户退款</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2">补充说明 <span class="text-red-500">*</span></label>
+                                <textarea id="appealContent" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none" placeholder="如有其他情况，请在此补充..."></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="px-6 py-4 bg-gray-50 border-t flex justify-end space-x-3">
+                    <button type="button" onclick="closeAppealModal()" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition">
+                        取消
+                    </button>
+                    <button type="button" onclick="submitAppeal()" class="px-4 py-2 btn-primary-color text-white rounded-lg transition">
+                        提交申诉
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 申诉确认模态框 -->
+    <div id="appealConfirmModal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-overlay absolute inset-0" onclick="closeAppealConfirmModal()"></div>
+        <div class="relative z-10 flex items-center justify-center min-h-screen p-4" style="background:transparent">
+            <div class="bg-white border border-gray-200 w-full max-w-sm fade-in" style="border-radius:16px;overflow:hidden">
+                <div class="p-6 text-center">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-question-circle text-3xl text-blue-500"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">确认申诉</h3>
+                    <p class="text-gray-500">确定要提交申诉吗？</p>
+                </div>
+                <div class="px-6 py-4 bg-gray-50 border-t flex justify-end space-x-3">
+                    <button type="button" onclick="closeAppealConfirmModal()" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition">
+                        取消
+                    </button>
+                    <button type="button" onclick="doSubmitAppeal()" class="px-4 py-2 btn-primary-color text-white rounded-lg transition border-0">
+                        确定
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 编辑申诉模态框 -->
+    <div id="editAppealModal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-overlay absolute inset-0" onclick="closeEditAppealModal()"></div>
+        <div class="relative z-10 flex items-center justify-center min-h-screen p-4" style="background:transparent">
+            <div class="bg-white border border-gray-200 w-full max-w-md fade-in" style="border-radius:16px;overflow:hidden">
+                <div class="header-blue-gradient text-white px-6 py-4 flex justify-between items-center">
+                    <h3 class="text-base font-bold"><i class="fas fa-edit" style="margin-right:8px"></i>编辑申诉</h3>
+                    <button onclick="closeEditAppealModal()" style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.2);border:none;color:white;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s" onmouseover="this.style.background='rgba(255,255,255,0.35)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                        <i class="fas fa-times" style="font-size:14px"></i>
+                    </button>
+                </div>
+                <div class="p-6">
+                    <form id="editAppealForm">
+                        <input type="hidden" id="editAppealOrderId">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2">申诉原因 <span class="text-red-500">*</span></label>
+                                <select id="editAppealType" required class="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none">
+                                    <option value="">请选择</option>
+                                    <option value="信息录错">信息录错</option>
+                                    <option value="客户退款">客户退款</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2">补充说明 <span class="text-red-500">*</span></label>
+                                <textarea id="editAppealContent" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none" placeholder="如有其他情况，请在此补充..."></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="px-6 py-4 bg-gray-50 border-t flex justify-end space-x-3">
+                    <button type="button" onclick="closeEditAppealModal()" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition">
+                        取消
+                    </button>
+                    <button type="button" onclick="saveEditAppeal()" class="px-4 py-2 btn-primary-color text-white rounded-lg transition border-0">
+                        保存修改
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 取消申诉确认模态框 -->
+    <div id="cancelAppealModal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-overlay absolute inset-0" onclick="closeCancelAppealModal()"></div>
+        <div class="relative z-10 flex items-center justify-center min-h-screen p-4" style="background:transparent">
+            <div class="bg-white border border-gray-200 w-full max-w-sm fade-in" style="border-radius:16px;overflow:hidden">
+                <div class="p-6 text-center">
+                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-times-circle text-3xl text-gray-500"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">确定要取消申诉吗？</h3>
+                    <p class="text-gray-500">取消后该订单将恢复正常状态</p>
+                </div>
+                <div class="px-6 py-4 bg-gray-50 border-t flex justify-end space-x-3">
+                    <button type="button" onclick="closeCancelAppealModal()" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition">
+                        取消
+                    </button>
+                    <button type="button" onclick="doCancelAppeal()" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition">
+                        确定取消
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 回执查看模态框 -->
+    <div id="replyModal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-overlay absolute inset-0" onclick="closeReplyModal()"></div>
+        <div class="relative z-10 flex items-center justify-center min-h-screen p-4" style="background:transparent">
+            <div class="bg-white border border-gray-200 w-full max-w-md fade-in" style="border-radius:16px;overflow:hidden">
+                <div class="header-blue-gradient text-white px-6 py-4 flex justify-between items-center">
+                    <h3 class="text-base font-bold"><i class="fas fa-check-circle" style="margin-right:8px"></i>回执信息</h3>
+                    <button onclick="closeReplyModal()" style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.2);border:none;color:white;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s" onmouseover="this.style.background='rgba(255,255,255,0.35)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                        <i class="fas fa-times" style="font-size:14px"></i>
+                    </button>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">回执时间</label>
+                            <p id="replyTime" class="text-gray-600"></p>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">回执内容</label>
+                            <p id="replyContent" class="text-gray-600 bg-blue-50 p-3 rounded-lg"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-6 py-4 bg-gray-50 border-t flex justify-end">
+                    <button type="button" onclick="closeReplyModal()" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition">
+                        关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 退出确认模态框 -->
+    <div id="logoutModal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-overlay absolute inset-0" onclick="closeLogoutModal()"></div>
+        <div class="relative z-10 flex items-center justify-center min-h-screen p-4" style="background:transparent">
+            <div class="bg-white border border-gray-200 w-full max-w-sm fade-in" style="border-radius:16px;overflow:hidden">
+                <div class="p-6 text-center">
+                    <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-sign-out-alt text-3xl text-red-500"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">确定要退出登录吗？</h3>
+                    <p class="text-gray-500">退出后将返回登录页面</p>
+                </div>
+                <div class="px-6 py-4 bg-gray-50 border-t flex justify-end space-x-3">
+                    <button type="button" onclick="closeLogoutModal()" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition">
+                        取消
+                    </button>
+                    <button type="button" onclick="doLogout()" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition">
+                        确定退出
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast通知容器 -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script>
+        // ==================== 全局变量 ====================
+        let products = [];
+        let salesStaff = [];
+        let itemRowCount = 0;
+        let currentUser = null; // 当前登录用户
+        
+        // 分页相关
+        let currentPage = 1;
+        const pageSize = 30;
+        let filteredOrders = [];
+
+        // 待提交的订单数据（用于确认弹窗）
+        let pendingOrderData = null;
+
+        // 客户渠道选项
+        const channelOptions = [
+            '百度推广',
+            '小红书推广',
+            '视频号推广',
+            '公众号推广',
+            '抖音推广',
+            '抖音包裹卡',
+            '淘系包裹卡',
+            '京东包裹卡',
+            '客户转介绍',
+            '小程序获客'
+        ];
+
+        // ==================== 初始化 ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            initData();
+            checkLoginStatus();
+            initEventListeners();
+        });
+
+        // 初始化数据
+        function initData() {
+            products = JSON.parse(localStorage.getItem('products') || '[]');
+            salesStaff = JSON.parse(localStorage.getItem('salesStaff') || '[]');
+            
+            // 如果没有示例数据，初始化
+            if (products.length === 0) {
+                products = [
+                    { id: 'P001', name: '龟鹿二仙膏', form: '膏方', spec: '250g/盒' },
+                    { id: 'P002', name: '龟甲胶', form: '胶块', spec: '500g/盒' },
+                    { id: 'P003', name: '龟甲胶', form: '胶粒', spec: '250g/盒' },
+                    { id: 'P004', name: '鹿角胶', form: '胶块', spec: '500g/盒' },
+                    { id: 'P005', name: '龟鹿养生茶', form: '茶包', spec: '30袋/盒' }
+                ];
+                localStorage.setItem('products', JSON.stringify(products));
+            }
+            
+            // 如果没有销售人员数据，或格式不正确（缺少account字段），初始化
+            if (salesStaff.length === 0 || !salesStaff[0].account) {
+                salesStaff = [
+                    { id: 'S001', name: '张三', account: 'zhangsan', password: 'zs123456' },
+                    { id: 'S002', name: '李四', account: 'lisi', password: 'ls123456' }
+                ];
+                localStorage.setItem('salesStaff', JSON.stringify(salesStaff));
+            }
+        }
+
+        // 检查登录状态
+        function checkLoginStatus() {
+            const savedUser = sessionStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showMainContent();
+            } else {
+                showLoginPage();
+            }
+        }
+
+        // 显示登录页面
+        function showLoginPage() {
+            document.getElementById('loginPage').classList.remove('hidden');
+            document.getElementById('mainContent').classList.add('hidden');
+        }
+
+        // 显示主内容
+        function showMainContent() {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('mainContent').classList.remove('hidden');
+            document.getElementById('currentUserName').textContent = currentUser.name;
+            
+            // 初始化表单
+            initForm();
+            
+            // 渲染订单列表
+            renderOrderList();
+            
+            // 初始化筛选下拉选项
+            initFilterOptions();
+        }
+
+        // 初始化筛选下拉选项
+        function initFilterOptions() {
+            updateFilterDropdowns();
+        }
+
+        // 更新筛选下拉选项
+        function updateFilterDropdowns() {
+            const allOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+            
+            // 获取唯一产品名称
+            const productNames = [...new Set(allOrders.flatMap(o => o.items.map(i => i.productName)))];
+            const productSelect = document.getElementById('filterProduct');
+            productSelect.innerHTML = '<option value="">全部</option>' + 
+                productNames.map(p => `<option value="${p}">${p}</option>`).join('');
+            
+            // 获取唯一渠道
+            const channels = [...new Set(allOrders.map(o => o.channel).filter(c => c))];
+            const channelSelect = document.getElementById('filterChannel');
+            channelSelect.innerHTML = '<option value="">全部</option>' + 
+                channels.map(c => `<option value="${c}">${c}</option>`).join('');
+        }
+
+        // 初始化事件监听
+        function initEventListeners() {
+            // 登录表单提交
+            document.getElementById('salesLoginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                handleLogin();
+            });
+
+            // 点击其他地方关闭下拉菜单
+            document.addEventListener('click', function(e) {
+                const dropdown = document.querySelector('.user-dropdown');
+                if (dropdown && !dropdown.contains(e.target)) {
+                    document.getElementById('userDropdownMenu').classList.add('hidden');
+                }
+            });
+        }
+
+        // 切换登录密码可见性
+        function toggleLoginPassword() {
+            const input = document.getElementById('salesLoginPassword');
+            const icon = document.getElementById('loginPasswordToggle');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // 处理登录
+        function handleLogin() {
+            const account = document.getElementById('salesLoginAccount').value.trim();
+            const password = document.getElementById('salesLoginPassword').value;
+            
+            if (!account || !password) {
+                showLoginError('请输入账号和密码');
+                return;
+            }
+
+            // 重新从localStorage读取最新数据
+            salesStaff = JSON.parse(localStorage.getItem('salesStaff') || '[]');
+            
+            // 如果数据格式不对，重新初始化
+            if (salesStaff.length > 0 && !salesStaff[0].account) {
+                salesStaff = [
+                    { id: 'S001', name: '张三', account: 'zhangsan', password: 'zs123456' },
+                    { id: 'S002', name: '李四', account: 'lisi', password: 'ls123456' }
+                ];
+                localStorage.setItem('salesStaff', JSON.stringify(salesStaff));
+            }
+            
+            if (salesStaff.length === 0) {
+                salesStaff = [
+                    { id: 'S001', name: '张三', account: 'zhangsan', password: 'zs123456' },
+                    { id: 'S002', name: '李四', account: 'lisi', password: 'ls123456' }
+                ];
+                localStorage.setItem('salesStaff', JSON.stringify(salesStaff));
+            }
+            
+            console.log('当前销售人员数据:', JSON.stringify(salesStaff));
+            console.log('输入账号:', account, '输入密码:', password);
+            
+            // 从localStorage验证
+            const staff = salesStaff.find(s => s.account === account && s.password === password);
+            
+            if (staff) {
+                currentUser = staff;
+                sessionStorage.setItem('currentUser', JSON.stringify(staff));
+                document.getElementById('salesLoginAccount').value = '';
+                document.getElementById('salesLoginPassword').value = '';
+                document.getElementById('salesLoginError').classList.add('hidden');
+                showMainContent();
+            } else {
+                showLoginError('账号或密码错误');
+            }
+        }
+
+        function showLoginError(message) {
+            const errorEl = document.getElementById('salesLoginError');
+            errorEl.textContent = message;
+            errorEl.classList.remove('hidden');
+        }
+
+        // 切换用户下拉菜单
+        function toggleUserDropdown() {
+            const menu = document.getElementById('userDropdownMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // 打开修改资料弹窗
+        function openProfileModal() {
+            document.getElementById('userDropdownMenu').classList.add('hidden');
+            document.getElementById('profileAccount').value = currentUser.account || '';
+            document.getElementById('profileName').value = currentUser.name || '';
+            document.getElementById('oldPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+            document.getElementById('profileModal').classList.remove('hidden');
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.add('hidden');
+        }
+
+        // 保存资料修改
+        function saveProfile() {
+            const oldPassword = document.getElementById('oldPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // 验证旧密码
+            if (oldPassword !== currentUser.password) {
+                showToast('旧密码不正确', 'error');
+                return;
+            }
+
+            // 验证新密码
+            if (!newPassword) {
+                showToast('请输入新密码', 'error');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                showToast('新密码长度不能少于6位', 'error');
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                showToast('两次输入的新密码不一致', 'error');
+                return;
+            }
+
+            // 更新localStorage中的数据
+            const staffIndex = salesStaff.findIndex(s => s.id === currentUser.id);
+            if (staffIndex !== -1) {
+                salesStaff[staffIndex].password = newPassword;
+                localStorage.setItem('salesStaff', JSON.stringify(salesStaff));
+                
+                // 更新sessionStorage
+                currentUser.password = newPassword;
+                sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
+                
+                closeProfileModal();
+                showToast('密码修改成功', 'success');
+            }
+        }
+
+        // 确认退出
+        function confirmLogout() {
+            document.getElementById('userDropdownMenu').classList.add('hidden');
+            document.getElementById('logoutModal').classList.remove('hidden');
+        }
+
+        function closeLogoutModal() {
+            document.getElementById('logoutModal').classList.add('hidden');
+        }
+
+        function doLogout() {
+            sessionStorage.removeItem('currentUser');
+            currentUser = null;
+            closeLogoutModal();
+            showLoginPage();
+        }
+
+        // ==================== 表单初始化 ====================
+        function initForm() {
+            // 设置默认日期为今天
+            document.getElementById('purchaseDate').value = formatDate(new Date());
+            
+            // 自动填充录入人
+            document.getElementById('salesPerson').value = currentUser.name;
+            
+            // 添加第一行商品
+            addItemRow();
+        }
+
+        // 获取去重后的产品名称列表
+        function getUniqueProductNames() {
+            const names = [...new Set(products.map(p => p.name))];
+            return names;
+        }
+
+        // 根据产品名称获取形态列表
+        function getFormsByProductName(name) {
+            return products.filter(p => p.name === name).map(p => p.form);
+        }
+
+        // 根据产品名称和形态获取规格列表
+        function getSpecsByNameAndForm(name, form) {
+            return products.filter(p => p.name === name && p.form === form).map(p => p.spec);
+        }
+
+        // ==================== 订单号生成 ====================
+        function generateOrderNo() {
+            const today = formatDate(new Date()).replace(/-/g, '');
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            
+            // 获取今天的所有订单
+            const todayOrders = orders.filter(o => o.orderNo.startsWith('GL' + today));
+            
+            // 生成序号
+            const sequence = String(todayOrders.length + 1).padStart(3, '0');
+            const orderNo = 'GL' + today + sequence;
+            
+            document.getElementById('orderNo').value = orderNo;
+        }
+
+        // ==================== 订单编号校验 ====================
+        function validateOrderNo(orderNo) {
+            // 首位可以是字母或数字，整体至少10位
+            const regex = /^[A-Za-z0-9]\w{9,}$/;
+            return regex.test(orderNo);
+        }
+
+        // ==================== 商品行管理 ====================
+        function addItemRow() {
+            itemRowCount++;
+            const container = document.getElementById('itemsContainer');
+            const emptyHint = document.getElementById('emptyItemsHint');
+            
+            emptyHint.classList.add('hidden');
+            
+            const rowId = 'item-' + itemRowCount;
+            const uniqueNames = getUniqueProductNames();
+            
+            const row = document.createElement('div');
+            row.id = rowId;
+            row.className = 'item-row';
+            row.innerHTML = `
+                <div class="flex items-start gap-3">
+                    <div class="flex-1 grid grid-cols-2" style="grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 12px;">
+                        <div>
+                            <label class="form-label">产品名称 <span class="required">*</span></label>
+                            <select onchange="onProductNameChange(this)" required class="product-name form-select">
+                                <option value="">请选择</option>
+                                ${uniqueNames.map(n => `<option value="${n}">${n}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">产品形态</label>
+                            <select onchange="onFormChange(this)" class="product-form form-select" disabled>
+                                <option value="">请先选择产品</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">产品规格</label>
+                            <select name="productSpec" class="product-spec form-select" disabled>
+                                <option value="">请先选择形态</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">数量 <span class="required">*</span></label>
+                            <input type="number" min="1" name="quantity" required class="quantity form-input" placeholder="数量" value="1">
+                        </div>
+                    </div>
+                    <button type="button" onclick="removeItemRow('${rowId}')" class="item-delete-btn mt-7">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            
+            container.appendChild(row);
+            
+            // 如果是第一行，禁用删除按钮
+            const rows = container.querySelectorAll('.item-row');
+            if (rows.length === 1) {
+                row.querySelector('.item-delete-btn').style.visibility = 'hidden';
+            } else {
+                rows.forEach(r => {
+                    r.querySelector('.item-delete-btn').style.visibility = 'visible';
+                });
+            }
+        }
+
+        function removeItemRow(rowId) {
+            const container = document.getElementById('itemsContainer');
+            const row = document.getElementById(rowId);
+            
+            row.remove();
+            
+            // 如果没有行了，显示提示
+            const rows = container.querySelectorAll('.item-row');
+            if (rows.length === 0) {
+                document.getElementById('emptyItemsHint').classList.remove('hidden');
+            } else if (rows.length === 1) {
+                rows[0].querySelector('.item-delete-btn').style.visibility = 'hidden';
+            }
+        }
+
+        // 产品名称变更事件
+        function onProductNameChange(select) {
+            const row = select.closest('.item-row');
+            const formSelect = row.querySelector('.product-form');
+            const specSelect = row.querySelector('.product-spec');
+            
+            const name = select.value;
+            
+            // 重置形态和规格
+            formSelect.innerHTML = '<option value="">请选择</option>';
+            formSelect.disabled = true;
+            specSelect.innerHTML = '<option value="">请先选择形态</option>';
+            specSelect.disabled = true;
+            
+            if (name) {
+                const forms = getFormsByProductName(name);
+                formSelect.innerHTML = '<option value="">请选择</option>' + 
+                    forms.map(f => `<option value="${f}">${f}</option>`).join('');
+                formSelect.disabled = false;
+            }
+        }
+
+        // 产品形态变更事件
+        function onFormChange(select) {
+            const row = select.closest('.item-row');
+            const nameSelect = row.querySelector('.product-name');
+            const specSelect = row.querySelector('.product-spec');
+            
+            const name = nameSelect.value;
+            const form = select.value;
+            
+            // 重置规格
+            specSelect.innerHTML = '<option value="">请先选择形态</option>';
+            specSelect.disabled = true;
+            
+            if (name && form) {
+                const specs = getSpecsByNameAndForm(name, form);
+                specSelect.innerHTML = '<option value="">请选择</option>' + 
+                    specs.map(s => `<option value="${s}">${s}</option>`).join('');
+                specSelect.disabled = false;
+            }
+        }
+
+        // ==================== 表单验证与提交 ====================
+        function validateForm() {
+            const orderNo = document.getElementById('orderNo').value.trim();
+            const purchaseDate = document.getElementById('purchaseDate').value;
+            const channel = document.getElementById('orderChannel').value;
+            const totalPrice = parseFloat(document.getElementById('totalPrice').value) || 0;
+            
+            // 收集商品信息
+            const itemRows = document.querySelectorAll('.item-row');
+            const items = [];
+            
+            itemRows.forEach(row => {
+                const productName = row.querySelector('.product-name').value;
+                const productForm = row.querySelector('.product-form').value;
+                const productSpec = row.querySelector('.product-spec').value;
+                const quantity = parseInt(row.querySelector('.quantity').value) || 0;
+                
+                if (productName && quantity > 0) {
+                    items.push({
+                        productName: productName,
+                        productForm: productForm || '-',
+                        productSpec: productSpec || '-',
+                        quantity: quantity
+                    });
+                }
+            });
+            
+            // 验证订单编号格式（24位纯数字）
+            if (!orderNo) {
+                showToast('请输入订单编号', 'error');
+                return null;
+            }
+            if (!validateOrderNo(orderNo)) {
+                showToast('订单编号错误，请检查', 'error');
+                return null;
+            }
+            if (!purchaseDate) {
+                showToast('请选择购买日期', 'error');
+                return null;
+            }
+            if (!channel) {
+                showToast('请选择客户渠道', 'error');
+                return null;
+            }
+            if (items.length === 0) {
+                showToast('请至少添加一个商品', 'error');
+                return null;
+            }
+            if (totalPrice <= 0) {
+                showToast('请输入订单价格', 'error');
+                return null;
+            }
+            
+            return {
+                orderNo,
+                purchaseDate,
+                channel,
+                totalPrice,
+                items
+            };
+        }
+
+        // 显示订单确认弹窗
+        function showOrderConfirmModal() {
+            const data = validateForm();
+            if (!data) return;
+            
+            const orderType = document.getElementById('orderType').value;
+            const salesPerson = currentUser.name;
+            
+            // 保存待提交的数据
+            pendingOrderData = {
+                ...data,
+                orderType,
+                salesPerson
+            };
+            
+            // 构建商品列表HTML
+            const itemsHtml = data.items.map(item => `
+                <div class="flex items-center text-sm">
+                    <span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded">${item.productName}</span>
+                    <span class="text-gray-500 ml-2">${item.productForm}</span>
+                    <span class="text-gray-500 ml-2">${item.productSpec}</span>
+                    <span class="text-gray-500 ml-2">×${item.quantity}</span>
+                </div>
+            `).join('');
+            
+            const totalQuantity = data.items.reduce((sum, item) => sum + item.quantity, 0);
+            
+            // 渲染确认内容
+            document.getElementById('confirmOrderContent').innerHTML = `
+                <div class="bg-gray-50 rounded-lg p-4 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">订单编号：</span>
+                        <span class="font-semibold text-gray-900">${data.orderNo}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">购买日期：</span>
+                        <span class="text-gray-900">${data.purchaseDate}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">订单类型：</span>
+                        <span class="px-2 py-0.5 text-xs rounded-full ${data.orderType === '内购' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}">${data.orderType}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">客户渠道：</span>
+                        <span class="px-2 py-0.5 text-xs rounded-full bg-purple-100 text-purple-700">${data.channel}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">录入人：</span>
+                        <span class="text-gray-900">${salesPerson}</span>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-gray-700 text-sm font-bold">商品列表：</label>
+                    <div class="bg-gray-50 rounded-lg p-3 space-y-2">
+                        ${itemsHtml}
+                    </div>
+                    <div class="text-right text-sm text-gray-600">共 ${totalQuantity} 件商品</div>
+                </div>
+                <div class="bg-blue-50 rounded-lg p-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-lg font-bold text-gray-800">订单总价：</span>
+                        <span class="text-2xl font-bold text-blue-600">¥${data.totalPrice.toFixed(2)}</span>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('confirmModal').classList.remove('hidden');
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').classList.add('hidden');
+            pendingOrderData = null;
+        }
+
+        // 确认提交订单
+        function confirmSubmit() {
+            if (!pendingOrderData) return;
+            
+            const now = new Date();
+            const order = {
+                id: 'O' + Date.now(),
+                orderNo: pendingOrderData.orderNo,
+                purchaseDate: pendingOrderData.purchaseDate,
+                orderType: pendingOrderData.orderType,
+                items: pendingOrderData.items,
+                channel: pendingOrderData.channel,
+                totalPrice: pendingOrderData.totalPrice,
+                salesPerson: pendingOrderData.salesPerson,
+                submitTime: formatDateTime(now),
+                lastModifiedTime: formatDateTime(now),
+                lastModifiedBy: pendingOrderData.salesPerson,
+                // 申诉相关字段
+                appealType: '',        // 申诉类型：信息录错/客户退款
+                appealStatus: '',      // 申诉状态
+                appealContent: '',     // 申诉补充说明
+                appealTime: '',
+                replyContent: '',
+                replyTime: ''
+            };
+            
+            // 保存到localStorage
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            orders.push(order);
+            localStorage.setItem('orders', JSON.stringify(orders));
+            
+            // 关闭确认弹窗
+            closeConfirmModal();
+            
+            // 显示成功弹窗
+            document.getElementById('successModal').classList.remove('hidden');
+            
+            // 重置表单
+            resetForm();
+            
+            // 刷新订单列表
+            renderOrderList();
+            
+            // 更新筛选下拉选项
+            updateFilterDropdowns();
+            
+            // 生成新的订单编号
+            generateOrderNo();
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('successModal').classList.add('hidden');
+        }
+
+        function resetForm() {
+            document.getElementById('orderForm').reset();
+            document.getElementById('purchaseDate').value = formatDate(new Date());
+            document.getElementById('orderChannel').value = ''; // 重置客户渠道
+            
+            // 清空商品列表并添加一行
+            const container = document.getElementById('itemsContainer');
+            container.innerHTML = '';
+            itemRowCount = 0;
+            addItemRow();
+        }
+
+        // ==================== 订单列表渲染 ====================
+        // 实时筛选
+        function applyRealtimeFilter() {
+            currentPage = 1;
+            renderOrderList();
+        }
+
+        function resetRealtimeFilter() {
+            document.getElementById('filterOrderNo').value = '';
+            document.getElementById('filterProduct').value = '';
+            document.getElementById('filterChannel').value = '';
+            document.getElementById('filterOrderType').value = '';
+            document.getElementById('filterDateFrom').value = '';
+            document.getElementById('filterDateTo').value = '';
+            currentPage = 1;
+            renderOrderList();
+        }
+
+        function renderOrderList() {
+            const filterOrderNo = document.getElementById('filterOrderNo').value.trim().toLowerCase();
+            const filterProduct = document.getElementById('filterProduct').value;
+            const filterChannel = document.getElementById('filterChannel').value;
+            const filterOrderType = document.getElementById('filterOrderType').value;
+            const filterDateFrom = document.getElementById('filterDateFrom').value;
+            const filterDateTo = document.getElementById('filterDateTo').value;
+            
+            const allOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+            
+            // 筛选当前登录用户的订单
+            let orders = allOrders.filter(o => o.salesPerson === currentUser.name);
+            
+            // 日期筛选（基于购买日期）
+            if (filterDateFrom) {
+                orders = orders.filter(o => o.purchaseDate >= filterDateFrom);
+            }
+            if (filterDateTo) {
+                orders = orders.filter(o => o.purchaseDate <= filterDateTo);
+            }
+            
+            // 订单编号筛选
+            if (filterOrderNo) {
+                orders = orders.filter(o => o.orderNo.toLowerCase().includes(filterOrderNo));
+            }
+            
+            // 产品筛选
+            if (filterProduct) {
+                orders = orders.filter(o => o.items.some(item => item.productName === filterProduct));
+            }
+            
+            // 渠道筛选
+            if (filterChannel) {
+                orders = orders.filter(o => o.channel === filterChannel);
+            }
+            
+            // 订单类型筛选
+            if (filterOrderType) {
+                orders = orders.filter(o => o.orderType === filterOrderType);
+            }
+            
+            // 保存筛选后的订单
+            filteredOrders = orders;
+            
+            // 按提交时间倒序排列
+            orders.sort((a, b) => new Date(b.submitTime) - new Date(a.submitTime));
+            
+            // 计算分页
+            const totalOrders = orders.length;
+            const totalPages = Math.ceil(totalOrders / pageSize);
+            const startIndex = (currentPage - 1) * pageSize;
+            const endIndex = Math.min(startIndex + pageSize, totalOrders);
+            const pageOrders = orders.slice(startIndex, endIndex);
+            
+            const container = document.getElementById('orderList');
+            const emptyState = document.getElementById('orderEmpty');
+            const pagination = document.getElementById('pagination');
+            
+            if (totalOrders === 0) {
+                container.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                pagination.classList.add('hidden');
+                return;
+            }
+            
+            emptyState.classList.add('hidden');
+            pagination.classList.remove('hidden');
+            
+            // 更新分页信息
+            document.getElementById('pageInfo').textContent = `共 ${totalOrders} 条，第 ${currentPage} / ${totalPages} 页`;
+            document.getElementById('prevBtn').disabled = currentPage <= 1;
+            document.getElementById('nextBtn').disabled = currentPage >= totalPages;
+            
+            container.innerHTML = pageOrders.map(order => {
+                const itemsHtml = order.items.map(item => `
+                    <div class="flex items-center text-xs gap-2">
+                        <span class="bg-blue-50 text-blue-700 px-2 py-0.5 rounded">${item.productName}</span>
+                        <span class="text-gray-700">${item.productSpec || ''}</span>
+                        <span class="text-gray-500">×${item.quantity}</span>
+                    </div>
+                `).join('');
+
+                const totalQuantity = order.items.reduce((sum, item) => sum + item.quantity, 0);
+                
+                // 状态显示 - 根据管理后台的状态同步显示
+                let statusHtml = '';
+                let actionBtns = '';
+                
+                // 优先检查已删除状态
+                if (order.deletedAt) {
+                    statusHtml = `<span class="px-2 py-0.5 text-xs rounded-full status-deleted">已删除</span>`;
+                    actionBtns = `<button disabled class="px-2 py-1 bg-gray-300 text-gray-500 rounded text-xs cursor-not-allowed">已删除</button>`;
+                }
+                // 检查作废状态
+                else if (order.orderStatus === '作废') {
+                    statusHtml = `<span class="px-2 py-0.5 text-xs rounded-full status-voided">作废</span>`;
+                    actionBtns = `<button disabled class="px-2 py-1 bg-gray-300 text-gray-500 rounded text-xs cursor-not-allowed">已作废</button>`;
+                }
+                // 检查退款状态
+                else if (order.orderStatus === '退款') {
+                    statusHtml = `<span class="px-2 py-0.5 text-xs rounded-full status-refunded">退款</span>`;
+                    actionBtns = `<button disabled class="px-2 py-1 bg-gray-300 text-gray-500 rounded text-xs cursor-not-allowed">已退款</button>`;
+                }
+                // 检查退款取消状态 → 退款取消 + 正常
+                else if (order.orderStatus === '退款取消') {
+                    statusHtml = `<span class="px-2 py-0.5 text-xs rounded-full status-refund-cancelled">退款取消</span><span class="px-2 py-0.5 text-xs rounded-full status-normal" style="margin-left:4px">正常</span>`;
+                    actionBtns = `<button disabled class="px-2 py-1 bg-gray-300 text-gray-500 rounded text-xs cursor-not-allowed">已处理</button>`;
+                }
+                // 检查申诉中状态
+                else if (order.appealStatus === '申诉中') {
+                    statusHtml = `<span class="px-2 py-0.5 text-xs rounded-full status-appealed">申诉中</span>`;
+                    
+                    // 根据申诉类型显示不同按钮
+                    if (order.appealType === '客户退款') {
+                        // 客户退款：可编辑、可取消
+                        actionBtns = `
+                            <span class="text-xs text-orange-600 mr-2">（客户退款）</span>
+                            <button onclick="openEditAppealModal('${order.id}')" class="appeal-btn">
+                                <i class="fas fa-edit mr-1"></i>编辑申诉
+                            </button>
+                            <button onclick="confirmCancelAppeal('${order.id}')" class="px-2 py-1 bg-gray-500 text-white rounded text-xs hover:bg-gray-600 transition ml-1 border-0">
+                                <i class="fas fa-times mr-1"></i>取消申诉
+                            </button>
+                        `;
+                    } else {
+                        // 信息录错：不可编辑不可取消
+                        actionBtns = `<button disabled class="px-2 py-1 bg-gray-300 text-gray-500 rounded text-xs cursor-not-allowed">申诉中</button>`;
+                    }
+                }
+                // 检查已处理/已回执状态 → 已回执 + 正常
+                else if (order.appealStatus === '已处理') {
+                    statusHtml = `<span class="px-2 py-0.5 text-xs rounded-full status-processed">已回执</span><span class="px-2 py-0.5 text-xs rounded-full status-normal" style="margin-left:4px">正常</span>`;
+                    actionBtns = `<button onclick="showReply('${order.id}')" class="appeal-btn relative group">
+                        <i class="fas fa-comment-alt mr-1"></i>查看回执
+                        ${order.replyContent ? `<div class="reply-tooltip">${order.replyContent}</div>` : ''}
+                    </button>`;
+                }
+                // 正常状态
+                else {
+                    statusHtml = `<span class="px-2 py-0.5 text-xs rounded-full status-normal">正常</span>`;
+                    actionBtns = `<button onclick="openAppealModal('${order.id}')" class="appeal-btn">
+                        <i class="fas fa-exclamation-circle mr-1"></i>申诉
+                    </button>`;
+                }
+                
+                return `
+                    <div class="order-card hover:bg-gray-50 transition">
+                        <!-- 第一行：订单编号、购买日期、类型标签、状态标签、金额、共x件 -->
+                        <div class="flex flex-wrap items-center gap-3 mb-2">
+                            <span class="font-semibold text-gray-900">${order.orderNo}</span>
+                            <span class="text-xs text-gray-500">共 ${totalQuantity} 件</span>
+                            <span class="text-sm text-gray-700">${order.purchaseDate}</span>
+                            <span class="px-2 py-0.5 text-xs rounded-full ${order.orderType === '内购' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}">${order.orderType}</span>
+                            ${statusHtml}
+                            <span class="price-display">¥${order.totalPrice.toFixed(2)}</span>
+                        </div>
+                        <!-- 商品列表 -->
+                        <div class="space-y-1 mb-2">
+                            ${itemsHtml}
+                        </div>
+                        <!-- 最后一行：录入时间、操作按钮 -->
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-400">录入时间：${order.submitTime}</span>
+                            <div class="flex items-center">${actionBtns}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 上一页
+        function prevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderOrderList();
+            }
+        }
+
+        // 下一页
+        function nextPage() {
+            const totalPages = Math.ceil(filteredOrders.length / pageSize);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderOrderList();
+            }
+        }
+
+        // 打开申诉弹窗
+        function openAppealModal(orderId) {
+            document.getElementById('appealOrderId').value = orderId;
+            document.getElementById('appealType').value = '';
+            document.getElementById('appealContent').value = '';
+            document.getElementById('appealModal').classList.remove('hidden');
+        }
+
+        function closeAppealModal() {
+            document.getElementById('appealModal').classList.add('hidden');
+        }
+
+        // 打开编辑申诉弹窗（仅客户退款类型）
+        function openEditAppealModal(orderId) {
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            const order = orders.find(o => o.id === orderId);
+            if (!order) return;
+
+            document.getElementById('editAppealOrderId').value = orderId;
+            const editAppealType = document.getElementById('editAppealType');
+            editAppealType.value = order.appealType || '';
+            // 如果是客户退款，锁定不可修改
+            if (order.appealType === '客户退款') {
+                editAppealType.disabled = true;
+                editAppealType.style.background = '#f3f4f6';
+                editAppealType.style.cursor = 'not-allowed';
+            } else {
+                editAppealType.disabled = false;
+                editAppealType.style.background = '';
+                editAppealType.style.cursor = '';
+            }
+            document.getElementById('editAppealContent').value = order.appealContent || '';
+            document.getElementById('editAppealModal').classList.remove('hidden');
+        }
+
+        function closeEditAppealModal() {
+            document.getElementById('editAppealModal').classList.add('hidden');
+        }
+
+        // 保存编辑后的申诉
+        function saveEditAppeal() {
+            const orderId = document.getElementById('editAppealOrderId').value;
+            const appealType = document.getElementById('editAppealType').value;
+            const appealContent = document.getElementById('editAppealContent').value.trim();
+            
+            if (!appealType || !appealContent) {
+                showToast('请填写完整的申诉信息', 'error');
+                return;
+            }
+            
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            const index = orders.findIndex(o => o.id === orderId);
+            
+            if (index !== -1) {
+                orders[index].appealType = appealType;
+                orders[index].appealContent = appealContent;
+                
+                localStorage.setItem('orders', JSON.stringify(orders));
+                closeEditAppealModal();
+                renderOrderList();
+                showToast('申诉已修改', 'success');
+            }
+        }
+
+        // 取消申诉确认弹窗
+        let currentCancelAppealOrderId = null;
+        function confirmCancelAppeal(orderId) {
+            currentCancelAppealOrderId = orderId;
+            document.getElementById('cancelAppealModal').classList.remove('hidden');
+        }
+
+        function closeCancelAppealModal() {
+            document.getElementById('cancelAppealModal').classList.add('hidden');
+            currentCancelAppealOrderId = null;
+        }
+
+        // 执行取消申诉
+        function doCancelAppeal() {
+            if (!currentCancelAppealOrderId) return;
+            
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            const index = orders.findIndex(o => o.id === currentCancelAppealOrderId);
+            
+            if (index !== -1) {
+                // 清空申诉相关字段
+                orders[index].appealStatus = '';
+                orders[index].appealType = '';
+                orders[index].appealContent = '';
+                orders[index].appealTime = '';
+                
+                localStorage.setItem('orders', JSON.stringify(orders));
+                closeCancelAppealModal();
+                renderOrderList();
+                showToast('申诉已取消，订单恢复正常', 'success');
+            }
+        }
+
+        // 提交申诉（显示确认）
+        function submitAppeal() {
+            const appealType = document.getElementById('appealType').value;
+            const appealContent = document.getElementById('appealContent').value.trim();
+            
+            if (!appealType || !appealContent) {
+                showToast('请填写完整的申诉信息', 'error');
+                return;
+            }
+            
+            // 显示确认弹窗
+            document.getElementById('appealConfirmModal').classList.remove('hidden');
+        }
+
+        function closeAppealConfirmModal() {
+            document.getElementById('appealConfirmModal').classList.add('hidden');
+        }
+
+        // 执行申诉提交
+        function doSubmitAppeal() {
+            const orderId = document.getElementById('appealOrderId').value;
+            const appealType = document.getElementById('appealType').value;
+            const appealContent = document.getElementById('appealContent').value.trim();
+            
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            const index = orders.findIndex(o => o.id === orderId);
+            
+            if (index !== -1) {
+                orders[index].appealStatus = '申诉中';
+                orders[index].appealType = appealType;
+                orders[index].appealContent = appealContent;
+                orders[index].appealTime = formatDateTime(new Date());
+                
+                localStorage.setItem('orders', JSON.stringify(orders));
+                closeAppealConfirmModal();
+                closeAppealModal();
+                renderOrderList();
+                showToast('申诉已提交', 'success');
+            }
+        }
+
+        // 显示回执内容
+        function showReply(orderId) {
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            const order = orders.find(o => o.id === orderId);
+            
+            if (order && order.replyContent) {
+                document.getElementById('replyTime').textContent = order.replyTime || '-';
+                document.getElementById('replyContent').textContent = order.replyContent;
+                document.getElementById('replyModal').classList.remove('hidden');
+            }
+        }
+
+        function closeReplyModal() {
+            document.getElementById('replyModal').classList.add('hidden');
+        }
+
+        // ==================== 工具函数 ====================
+        function formatDate(date) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        function formatDateTime(date) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            const h = String(date.getHours()).padStart(2, '0');
+            const min = String(date.getMinutes()).padStart(2, '0');
+            const s = String(date.getSeconds()).padStart(2, '0');
+            return `${y}-${m}-${d} ${h}:${min}:${s}`;
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast px-4 py-3 rounded-lg flex items-center ${type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`;
+            toast.innerHTML = `
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                <span class="ml-2">${message}</span>
+            `;
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // 监听localStorage变化（用于跨页面数据同步）
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'products' || e.key === 'salesStaff' || e.key === 'orders') {
+                products = JSON.parse(localStorage.getItem('products') || '[]');
+                salesStaff = JSON.parse(localStorage.getItem('salesStaff') || '[]');
+                if (currentUser) {
+                    renderOrderList();
+                    updateFilterDropdowns();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
