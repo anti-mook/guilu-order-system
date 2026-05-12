@@ -1,0 +1,8 @@
+{
+  "products": [],
+  "salesStaff": [],
+  "orders": [],
+  "admins": [
+    { "id": "A001", "username": "admin", "password": "admin123", "name": "管理员" }
+  ]
+}

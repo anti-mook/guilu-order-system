@@ -2552,5 +2552,100 @@
             }
         });
     </script>
+
+    <!-- 数据云端同步脚本 -->
+    <script>
+    const DataSync = {
+        _sha: '',
+        _dirtyKeys: new Set(),
+        _lastLocalWrite: 0,
+        _pushTimer: null,
+        _syncing: false,
+        
+        async pull() {
+            if (this._syncing) return;
+            // 如果最近5秒有本地写入，跳过拉取
+            if (Date.now() - this._lastLocalWrite < 5000) return;
+            try {
+                this._syncing = true;
+                const res = await fetch('/api/data');
+                if (!res.ok) return;
+                const cloudData = await res.json();
+                if (cloudData._sha) this._sha = cloudData._sha;
+                // 更新localStorage（仅更新云端有的key）
+                ['products','salesStaff','orders','admins'].forEach(key => {
+                    if (cloudData[key] !== undefined) {
+                        // 保存原始的setItem避免触发push
+                        localStorage.__proto__.setItem.call(localStorage, key, JSON.stringify(cloudData[key]));
+                    }
+                });
+                // 刷新页面数据
+                products = JSON.parse(localStorage.getItem('products') || '[]');
+                salesStaff = JSON.parse(localStorage.getItem('salesStaff') || '[]');
+                if (currentUser) {
+                    renderOrderList();
+                    updateFilterDropdowns();
+                }
+            } catch(e) {
+                console.warn('DataSync pull failed:', e);
+            } finally {
+                this._syncing = false;
+            }
+        },
+        
+        async push() {
+            try {
+                const data = {
+                    products: JSON.parse(localStorage.getItem('products') || '[]'),
+                    salesStaff: JSON.parse(localStorage.getItem('salesStaff') || '[]'),
+                    orders: JSON.parse(localStorage.getItem('orders') || '[]'),
+                    admins: JSON.parse(localStorage.getItem('admins') || '[]'),
+                };
+                if (this._sha) data._sha = this._sha;
+                const res = await fetch('/api/data', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                if (result.sha) this._sha = result.sha;
+            } catch(e) {
+                console.warn('DataSync push failed:', e);
+            }
+        },
+        
+        schedulePush() {
+            this._lastLocalWrite = Date.now();
+            clearTimeout(this._pushTimer);
+            this._pushTimer = setTimeout(() => this.push(), 500);
+        },
+        
+        init() {
+            // 劫持localStorage.setItem
+            const originalSetItem = localStorage.setItem.bind(localStorage);
+            localStorage.setItem = function(key, value) {
+                originalSetItem(key, value);
+                if (['products','salesStaff','orders','admins'].includes(key)) {
+                    DataSync.schedulePush();
+                }
+            };
+            // 保存原始方法备用
+            localStorage._originalSetItem = originalSetItem;
+            
+            // 页面加载时拉取数据
+            this.pull();
+            
+            // 定时拉取
+            setInterval(() => this.pull(), 30000);
+        }
+    };
+
+    // 在DOM ready后初始化
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => DataSync.init());
+    } else {
+        DataSync.init();
+    }
+    </script>
 </body>
 </html>
