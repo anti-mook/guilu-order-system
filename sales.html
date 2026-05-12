@@ -1668,21 +1668,9 @@
             // 重新从localStorage读取最新数据
             salesStaff = JSON.parse(localStorage.getItem('salesStaff') || '[]');
             
-            // 如果数据格式不对，重新初始化
-            if (salesStaff.length > 0 && !salesStaff[0].account) {
-                salesStaff = [
-                    { id: 'S001', name: '张三', account: 'zhangsan', password: 'zs123456' },
-                    { id: 'S002', name: '李四', account: 'lisi', password: 'ls123456' }
-                ];
-                localStorage.setItem('salesStaff', JSON.stringify(salesStaff));
-            }
-            
             if (salesStaff.length === 0) {
-                salesStaff = [
-                    { id: 'S001', name: '张三', account: 'zhangsan', password: 'zs123456' },
-                    { id: 'S002', name: '李四', account: 'lisi', password: 'ls123456' }
-                ];
-                localStorage.setItem('salesStaff', JSON.stringify(salesStaff));
+                showLoginError('暂无销售人员账号，请先在管理后台添加');
+                return;
             }
             
             console.log('当前销售人员数据:', JSON.stringify(salesStaff));
