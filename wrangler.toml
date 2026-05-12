@@ -4,4 +4,4 @@ compatibility_date = "2024-01-01"
 [[d1_databases]]
 binding = "DB"
 database_name = "guilu-order-db"
-database_id = "PLACEHOLDER_ID"
+database_id = "b55f541b-0140-4e16-93bd-b1199436c23f"
