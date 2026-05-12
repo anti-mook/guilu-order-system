@@ -677,6 +677,548 @@
             top: 50%;
             transform: translateY(-50%);
         }
+
+        /* ================================================
+           移动端响应式增强样式
+           ================================================ */
+
+        /* 移动端侧边栏遮罩层 */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 99;
+        }
+        .sidebar-overlay.show {
+            display: block;
+        }
+
+        /* 平板端适配 (768px - 1024px) */
+        @media (max-width: 1024px) {
+            .page-container {
+                padding: 16px;
+            }
+            
+            /* 数据分析卡片 */
+            .stat-card {
+                padding: 16px;
+            }
+            
+            .stat-card-value {
+                font-size: 20px;
+            }
+            
+            .chart-container {
+                height: 280px;
+            }
+        }
+
+        /* 平板端及以下 (max-width: 768px) */
+        @media (max-width: 768px) {
+            /* 登录页面适配 */
+            #loginPage > div {
+                margin: 16px;
+                padding: 24px 20px !important;
+                max-width: none !important;
+                width: calc(100% - 32px) !important;
+            }
+            
+            #loginPage img {
+                height: 56px !important;
+            }
+            
+            #loginPage h1 {
+                font-size: 18px !important;
+            }
+            
+            /* 侧边栏 */
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                width: 280px;
+                min-width: 280px;
+                z-index: 200;
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            /* 移动端顶部栏 */
+            .mobile-header {
+                display: flex !important;
+                position: sticky;
+                top: 0;
+                z-index: 50;
+            }
+            
+            .menu-toggle {
+                padding: 10px 12px;
+                min-height: 44px;
+                min-width: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            /* 页面容器 */
+            .page-container {
+                padding: 12px;
+            }
+            
+            /* 数据分析页面 */
+            .page-content {
+                padding: 12px;
+            }
+            
+            .page-header {
+                margin-bottom: 16px;
+            }
+            
+            .page-title {
+                font-size: 18px;
+            }
+            
+            /* 数据卡片 - 改为单列 */
+            .grid.md\:grid-cols-2 {
+                grid-template-columns: 1fr;
+            }
+            
+            .stat-card {
+                padding: 16px;
+            }
+            
+            .stat-card-title {
+                font-size: 13px;
+            }
+            
+            .stat-card-value {
+                font-size: 24px;
+            }
+            
+            /* 图表容器 */
+            .chart-container {
+                height: 250px;
+            }
+            
+            /* 筛选区域 - 竖排 */
+            .filter-bar {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 12px;
+                gap: 10px;
+            }
+            
+            .filter-bar .flex {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .filter-item {
+                width: 100%;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+            
+            .filter-item select,
+            .filter-item input {
+                width: 100%;
+                min-width: auto;
+            }
+            
+            .product-search-wrapper {
+                width: 100%;
+            }
+            
+            .product-search-wrapper input {
+                width: 100%;
+                min-width: auto;
+            }
+            
+            /* 操作按钮区域 */
+            .filter-bar .flex.flex-wrap.items-center.gap-3 {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .filter-bar button {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            /* 卡片头部 */
+            .card-header {
+                padding: 12px 16px;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            
+            /* 表格区域 */
+            .overflow-x-auto {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            /* 表格样式保持，但添加移动端友好 */
+            .data-table {
+                font-size: 12px;
+            }
+            
+            .data-table th,
+            .data-table td {
+                padding: 10px 8px;
+                white-space: nowrap;
+            }
+            
+            /* 表格转卡片 - 移动端 */
+            .data-table-container {
+                display: none;
+            }
+            
+            .mobile-card-list {
+                display: block;
+            }
+            
+            /* 移动端卡片列表样式 */
+            .mobile-card-item {
+                background: white;
+                border-radius: 8px;
+                padding: 14px;
+                margin-bottom: 10px;
+                border: 1px solid #e5e7eb;
+            }
+            
+            .mobile-card-item:last-child {
+                margin-bottom: 0;
+            }
+            
+            .mobile-card-row {
+                display: flex;
+                justify-content: space-between;
+                padding: 6px 0;
+                border-bottom: 1px solid #f3f4f6;
+                font-size: 13px;
+            }
+            
+            .mobile-card-row:last-child {
+                border-bottom: none;
+            }
+            
+            .mobile-card-row .label {
+                color: #6b7280;
+                flex-shrink: 0;
+            }
+            
+            .mobile-card-row .value {
+                color: #374151;
+                text-align: right;
+                word-break: break-all;
+            }
+            
+            .mobile-card-actions {
+                display: flex;
+                gap: 8px;
+                margin-top: 12px;
+                padding-top: 12px;
+                border-top: 1px solid #e5e7eb;
+            }
+            
+            .mobile-card-actions button {
+                flex: 1;
+                padding: 8px 12px;
+                font-size: 13px;
+                border-radius: 6px;
+                min-height: 36px;
+            }
+            
+            /* 分页区域 */
+            .pagination {
+                flex-direction: column;
+                gap: 12px;
+                padding: 12px;
+            }
+            
+            .pagination-info {
+                text-align: center;
+            }
+            
+            .pagination-controls {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            /* Tab切换 */
+            .card-header .flex.border-b-0 {
+                width: 100%;
+                overflow-x: auto;
+            }
+            
+            .card-header .flex.border-b-0 button {
+                white-space: nowrap;
+                padding: 10px 16px;
+            }
+            
+            /* 操作栏 */
+            .card-body .flex.flex-wrap.justify-between.items-center.gap-4 {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .card-body .flex.flex-wrap.items-center.gap-3 {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .card-body .flex.flex-wrap.items-center.gap-3 .filter-item {
+                width: 100%;
+            }
+            
+            /* 弹窗适配 */
+            .modal-content {
+                max-height: 85vh;
+                overflow-y: auto;
+            }
+            
+            /* 产品弹窗表单 */
+            #productModal > div > div:last-child {
+                max-width: 95% !important;
+            }
+            
+            #productModal .grid {
+                grid-template-columns: 1fr !important;
+            }
+            
+            #productModal input,
+            #productModal select {
+                font-size: 16px; /* 防止iOS缩放 */
+                min-height: 44px;
+            }
+            
+            /* 订单弹窗 */
+            #orderModal > div > div:last-child {
+                max-width: 95% !important;
+            }
+            
+            /* 导入弹窗 */
+            #importModal > div > div:last-child {
+                max-width: 95% !important;
+            }
+            
+            /* 确认弹窗 */
+            #voidConfirmModal > div > div:last-child,
+            #refundConfirmModal > div > div:last-child {
+                max-width: 320px !important;
+            }
+        }
+
+        /* 手机端适配 (max-width: 480px) */
+        @media (max-width: 480px) {
+            /* 登录页更紧凑 */
+            #loginPage > div {
+                margin: 8px;
+                padding: 20px 16px !important;
+            }
+            
+            #loginPage img {
+                height: 48px !important;
+            }
+            
+            #loginPage h1 {
+                font-size: 16px !important;
+            }
+            
+            #loginPage input {
+                font-size: 16px; /* 防止iOS缩放 */
+                min-height: 44px;
+            }
+            
+            /* 侧边栏 */
+            .sidebar {
+                width: 85%;
+                max-width: 300px;
+            }
+            
+            /* 页面标题 */
+            .page-title {
+                font-size: 16px;
+            }
+            
+            /* 数据分析卡片 */
+            .stat-card {
+                padding: 14px;
+            }
+            
+            .stat-card-value {
+                font-size: 22px;
+            }
+            
+            .stat-card-sub {
+                font-size: 11px;
+            }
+            
+            /* 图表 */
+            .chart-container {
+                height: 220px;
+            }
+            
+            /* 筛选标签 */
+            .filter-item label {
+                font-size: 12px;
+            }
+            
+            .filter-item select,
+            .filter-item input {
+                font-size: 14px;
+                padding: 8px 10px;
+            }
+            
+            /* 卡片头部 */
+            .card-header {
+                padding: 10px 12px;
+            }
+            
+            .card-header h2 {
+                font-size: 14px;
+            }
+            
+            .card-body {
+                padding: 12px;
+            }
+            
+            /* 表格 */
+            .data-table th {
+                font-size: 11px;
+                padding: 8px 6px;
+            }
+            
+            .data-table td {
+                font-size: 12px;
+                padding: 8px 6px;
+            }
+            
+            /* 移动端卡片 */
+            .mobile-card-item {
+                padding: 12px;
+            }
+            
+            .mobile-card-row {
+                font-size: 12px;
+                padding: 5px 0;
+            }
+            
+            .mobile-card-actions {
+                margin-top: 10px;
+                padding-top: 10px;
+            }
+            
+            .mobile-card-actions button {
+                font-size: 12px;
+                padding: 6px 10px;
+            }
+            
+            /* 按钮 */
+            .btn {
+                min-height: 44px;
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+            
+            button[class*="bg-"] {
+                min-height: 44px;
+            }
+            
+            /* 弹窗 */
+            .modal-content {
+                max-height: 90vh;
+            }
+            
+            .modal-content .p-6 {
+                padding: 16px 12px;
+            }
+            
+            /* 产品弹窗 */
+            #productModal .bg-gray-50 {
+                padding: 12px;
+            }
+            
+            #productModal h4 {
+                font-size: 14px;
+            }
+            
+            /* 导入弹窗 */
+            #importModal textarea {
+                min-height: 120px;
+            }
+            
+            /* 分页按钮 */
+            .pagination-btn {
+                padding: 8px 12px;
+                font-size: 12px;
+                min-height: 36px;
+            }
+        }
+
+        /* 触摸设备优化 */
+        @media (hover: none) and (pointer: coarse) {
+            /* 移除hover效果，使用active状态 */
+            .btn:active,
+            button:active {
+                opacity: 0.9;
+            }
+            
+            /* 更大的点击区域 */
+            .nav-item,
+            .pagination-btn,
+            .filter-btn {
+                min-height: 44px;
+            }
+            
+            /* 表格行触摸友好 */
+            .data-table tbody tr {
+                min-height: 44px;
+            }
+        }
+
+        /* 横屏手机适配 */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .page-container {
+                padding: 8px 16px;
+            }
+            
+            .filter-bar {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            
+            .filter-item {
+                width: auto;
+                flex-direction: row;
+            }
+            
+            .chart-container {
+                height: 200px;
+            }
+        }
+
+        /* 移动端卡片列表隐藏/显示控制 */
+        @media (min-width: 769px) {
+            .data-table-container {
+                display: block;
+            }
+            
+            .mobile-card-list {
+                display: none;
+            }
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
 </head>
@@ -719,6 +1261,9 @@
 
     <!-- 管理后台主页 -->
     <div id="mainPage" class="hidden">
+        <!-- 侧边栏遮罩层 -->
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+        
         <!-- 左侧导航栏 -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
@@ -1779,6 +2324,8 @@
         }
 
         function logout() {
+            // 移动端退出时关闭侧边栏
+            closeSidebar();
             sessionStorage.removeItem('adminLoggedIn');
             sessionStorage.removeItem('currentAdmin');
             sessionStorage.removeItem('currentAdminUsername');
@@ -1792,11 +2339,26 @@
         // 移动端侧边栏切换
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
             sidebar.classList.toggle('open');
+            overlay.classList.toggle('show');
+        }
+
+        // 关闭侧边栏
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.remove('open');
+            overlay.classList.remove('show');
         }
 
         // ==================== 页面切换 ====================
         function switchTab(tab) {
+            // 移动端切换页面后关闭侧边栏
+            if (window.innerWidth <= 768) {
+                closeSidebar();
+            }
+            
             // 切换左侧导航
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.remove('active');

@@ -978,6 +978,476 @@
         .user-dropdown-menu button:last-child:hover i {
             color: #dc2626;
         }
+
+        /* ================================================
+           响应式样式 - 移动端优先设计
+           ================================================ */
+
+        /* 平板端适配 (768px - 1024px) */
+        @media (max-width: 1024px) {
+            .page-container {
+                padding: 0 12px;
+            }
+            
+            /* 订单表单区域 */
+            .form-section .flex.flex-wrap.items-center.gap-3 {
+                gap: 12px;
+            }
+        }
+
+        /* 平板端及以下 (max-width: 768px) */
+        @media (max-width: 768px) {
+            /* 登录页面适配 */
+            #loginPage > div {
+                margin: 16px;
+                padding: 24px 20px !important;
+                max-width: none !important;
+            }
+            
+            #loginPage img {
+                width: 56px !important;
+                height: 56px !important;
+            }
+            
+            #loginPage h1 {
+                font-size: 18px !important;
+            }
+            
+            /* 顶部导航适配 */
+            .nav-bar {
+                position: relative;
+            }
+            
+            .nav-bar .page-container {
+                flex-direction: column;
+                padding: 12px 16px;
+                gap: 12px;
+            }
+            
+            .nav-bar .flex.justify-between.items-center {
+                flex-direction: column;
+                width: 100%;
+                gap: 8px;
+            }
+            
+            .nav-bar .flex.items-center:first-child {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .nav-bar .flex.items-center:last-child {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            /* 页面容器 */
+            .page-container {
+                padding: 0 12px;
+            }
+            
+            /* 订单表单卡片 */
+            .card-body {
+                padding: 16px 12px;
+            }
+            
+            /* 表单项 */
+            .form-section .flex.flex-wrap.items-center.gap-3 {
+                flex-direction: column;
+                align-items: stretch;
+                width: 100%;
+            }
+            
+            .form-section .flex-1 {
+                width: 100%;
+                min-width: auto;
+            }
+            
+            /* 商品列表 */
+            .item-row .flex {
+                flex-direction: column;
+            }
+            
+            .item-row .grid {
+                grid-template-columns: 1fr !important;
+            }
+            
+            .item-row .item-delete-btn {
+                align-self: flex-end;
+                margin-top: -32px;
+            }
+            
+            /* 筛选栏适配 */
+            .filter-bar {
+                padding: 12px 16px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .filter-bar > div:first-child {
+                flex-direction: column;
+            }
+            
+            .filter-bar .flex.flex-wrap.items-center.gap-2 {
+                flex-direction: column;
+                align-items: stretch;
+                width: 100%;
+            }
+            
+            .filter-bar .filter-input,
+            .filter-bar .filter-select {
+                width: 100% !important;
+                min-width: auto !important;
+            }
+            
+            .filter-bar .filter-label {
+                margin-bottom: 4px;
+            }
+            
+            /* 订单列表 - 卡片化 */
+            .order-card {
+                padding: 12px 16px;
+            }
+            
+            .order-card .flex {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .order-card .flex.justify-between {
+                flex-direction: column;
+                gap: 4px;
+            }
+            
+            .order-card .text-sm {
+                font-size: 12px;
+            }
+            
+            /* 订单卡片信息 */
+            .order-card-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .order-card-meta {
+                flex-direction: column;
+                gap: 4px;
+            }
+            
+            /* 分页 */
+            #pagination {
+                flex-direction: column;
+                gap: 12px;
+                padding: 12px 16px;
+            }
+            
+            #pagination .flex {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            /* 表单按钮 */
+            .card-body .flex.justify-end.space-x-3 {
+                flex-direction: column-reverse;
+                gap: 8px;
+            }
+            
+            .card-body .flex.justify-end.space-x-3 .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            /* 商品区域按钮 */
+            .items-header {
+                flex-direction: column;
+                gap: 8px;
+                align-items: flex-start;
+            }
+            
+            .items-header .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            /* 订单金额区域 */
+            .compact-grid {
+                max-width: 100% !important;
+            }
+        }
+
+        /* 手机端适配 (max-width: 480px) */
+        @media (max-width: 480px) {
+            /* 登录页更紧凑 */
+            #loginPage > div {
+                margin: 8px;
+                padding: 20px 16px !important;
+            }
+            
+            #loginPage img {
+                width: 48px !important;
+                height: 48px !important;
+            }
+            
+            #loginPage h1 {
+                font-size: 16px !important;
+            }
+            
+            /* 登录表单 */
+            .login-form-group input {
+                padding: 10px 12px 10px 36px !important;
+                font-size: 14px;
+            }
+            
+            .login-form-group label {
+                font-size: 13px;
+            }
+            
+            /* 按钮最小点击区域 */
+            .btn {
+                min-height: 44px;
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+            
+            /* 输入框高度 */
+            .form-input,
+            .form-select {
+                min-height: 44px;
+                font-size: 14px;
+            }
+            
+            /* 表单标签 */
+            .form-label {
+                font-size: 13px;
+            }
+            
+            /* 表单section */
+            .form-section {
+                padding: 12px 0;
+            }
+            
+            .form-section-title {
+                font-size: 13px;
+                margin-bottom: 8px;
+            }
+            
+            /* 商品行更紧凑 */
+            .item-row {
+                padding: 12px;
+                margin-bottom: 6px;
+            }
+            
+            .item-row .form-label {
+                font-size: 12px;
+            }
+            
+            /* 筛选标签 */
+            .filter-label {
+                font-size: 12px;
+            }
+            
+            .filter-btn {
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+            
+            /* 弹窗适配 */
+            .modal-dialog {
+                width: 92% !important;
+                max-width: none !important;
+                margin: 16px auto;
+            }
+            
+            /* 成功弹窗 */
+            #successModal > div:last-child {
+                max-width: 300px !important;
+            }
+            
+            #successModal .w-24 {
+                width: 80px !important;
+                height: 80px !important;
+            }
+            
+            #successModal .text-2xl {
+                font-size: 20px !important;
+            }
+            
+            /* 确认弹窗 */
+            #confirmModal > div:last-child,
+            #appealModal > div:last-child,
+            #profileModal > div:last-child {
+                max-width: 95% !important;
+            }
+            
+            /* 回执查看 */
+            #replyModal > div:last-child {
+                max-width: 95% !important;
+            }
+            
+            /* 卡片内边距 */
+            .card {
+                border-radius: 6px;
+            }
+            
+            .card-header {
+                padding: 10px 12px;
+            }
+            
+            .card-header h2 {
+                font-size: 14px;
+            }
+            
+            .card-body {
+                padding: 12px;
+            }
+            
+            /* 订单列表筛选标题 */
+            .filter-bar h2 {
+                font-size: 14px;
+            }
+            
+            /* 订单卡片信息项 */
+            .order-card {
+                padding: 10px 12px;
+            }
+            
+            .order-card .divide-y > * + * {
+                padding-top: 8px;
+                margin-top: 8px;
+            }
+            
+            /* 订单金额显示 */
+            .price-display {
+                font-size: 16px;
+            }
+            
+            /* 状态标签 */
+            .status-normal,
+            .status-appealed,
+            .status-processed,
+            .status-voided,
+            .status-refunded {
+                font-size: 11px;
+                padding: 2px 6px;
+            }
+            
+            /* Toast通知 */
+            .toast-container {
+                left: 8px;
+                right: 8px;
+            }
+            
+            /* 分页按钮 */
+            .pagination-btn {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+        }
+
+        /* 触摸设备优化 */
+        @media (hover: none) and (pointer: coarse) {
+            /* 移除hover效果，使用active状态 */
+            .btn:active {
+                opacity: 0.9;
+            }
+            
+            /* 更大的点击区域 */
+            .nav-item,
+            .filter-btn,
+            .appeal-btn {
+                min-height: 44px;
+            }
+            
+            /* 下拉菜单触摸友好 */
+            .user-dropdown-menu {
+                min-width: 180px;
+            }
+            
+            .user-dropdown-menu button {
+                min-height: 44px;
+            }
+        }
+
+        /* 横屏手机适配 */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .nav-bar .page-container {
+                flex-direction: row;
+                padding: 8px 16px;
+            }
+            
+            .form-section .flex.flex-wrap.items-center.gap-3 {
+                flex-direction: row;
+            }
+            
+            .form-section .flex-1 {
+                width: auto;
+            }
+        }
+
+        /* ================================================
+           弹窗响应式样式
+           ================================================ */
+        @media (max-width: 768px) {
+            /* 所有弹窗容器 */
+            #profileModal > div:last-child,
+            #confirmModal > div:last-child,
+            #successModal > div:last-child,
+            #appealModal > div:last-child,
+            #appealConfirmModal > div:last-child,
+            #editAppealModal > div:last-child,
+            #cancelAppealModal > div:last-child,
+            #replyModal > div:last-child,
+            #logoutModal > div:last-child {
+                max-width: 92% !important;
+                margin: 10px auto;
+            }
+            
+            /* 弹窗内容区 */
+            .modal-content {
+                max-height: 80vh;
+            }
+            
+            /* 弹窗内表单 */
+            .modal-content form .space-y-4 > * {
+                margin-bottom: 12px;
+            }
+            
+            .modal-content input,
+            .modal-content select,
+            .modal-content textarea {
+                font-size: 16px; /* 防止iOS缩放 */
+            }
+        }
+
+        @media (max-width: 480px) {
+            #profileModal > div:last-child,
+            #confirmModal > div:last-child,
+            #appealModal > div:last-child,
+            #editAppealModal > div:last-child,
+            #replyModal > div:last-child {
+                max-width: 95% !important;
+                margin: 5px auto;
+            }
+            
+            .modal-content {
+                max-height: 85vh;
+            }
+            
+            /* 弹窗内边距 */
+            .modal-content .p-6 {
+                padding: 16px 12px;
+            }
+            
+            /* 弹窗按钮 */
+            .modal-content .bg-gray-50 {
+                padding: 12px !important;
+                flex-wrap: wrap;
+            }
+            
+            .modal-content .bg-gray-50 button {
+                flex: 1;
+                min-width: 100px;
+            }
+        }
     </style>
 </head>
 <body>
