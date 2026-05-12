@@ -4004,7 +4004,12 @@
             this.pull();
             
             // 定时拉取
-            setInterval(() => this.pull(), 10000);
+            setInterval(() => this.pull(), 5000);
+            
+            // 切回页面时立即拉取
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) this.pull();
+            });
         }
     };
 
