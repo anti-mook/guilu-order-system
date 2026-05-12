@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>龟鹿药业订单管理系统 - 销售录入</title>
+    <title>龟鹿药业私域录单系统</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -1566,27 +1566,6 @@
         function initData() {
             products = JSON.parse(localStorage.getItem('products') || '[]');
             salesStaff = JSON.parse(localStorage.getItem('salesStaff') || '[]');
-            
-            // 如果没有示例数据，初始化
-            if (products.length === 0) {
-                products = [
-                    { id: 'P001', name: '龟鹿二仙膏', form: '膏方', spec: '250g/盒' },
-                    { id: 'P002', name: '龟甲胶', form: '胶块', spec: '500g/盒' },
-                    { id: 'P003', name: '龟甲胶', form: '胶粒', spec: '250g/盒' },
-                    { id: 'P004', name: '鹿角胶', form: '胶块', spec: '500g/盒' },
-                    { id: 'P005', name: '龟鹿养生茶', form: '茶包', spec: '30袋/盒' }
-                ];
-                localStorage.setItem('products', JSON.stringify(products));
-            }
-            
-            // 如果没有销售人员数据，或格式不正确（缺少account字段），初始化
-            if (salesStaff.length === 0 || !salesStaff[0].account) {
-                salesStaff = [
-                    { id: 'S001', name: '张三', account: 'zhangsan', password: 'zs123456' },
-                    { id: 'S002', name: '李四', account: 'lisi', password: 'ls123456' }
-                ];
-                localStorage.setItem('salesStaff', JSON.stringify(salesStaff));
-            }
         }
 
         // 检查登录状态

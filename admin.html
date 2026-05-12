@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>龟鹿药业私域订单系统 - 管理后台</title>
+    <title>龟鹿药业私域订单系统</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* 全局重置 */
@@ -1725,7 +1725,7 @@
 
         // 初始化示例数据
         function initData() {
-            // 初始化管理员
+            // 初始化管理员（仅保留默认管理员）
             if (!localStorage.getItem('admins')) {
                 const admins = [
                     { id: 'A001', username: 'admin', password: 'admin123', name: '管理员' }
@@ -1733,131 +1733,19 @@
                 localStorage.setItem('admins', JSON.stringify(admins));
             }
 
-            // 初始化产品
+            // 初始化产品（清空示例数据）
             if (!localStorage.getItem('products')) {
-                const products = [
-                    {
-                        id: 'P001',
-                        code: 'GL001',
-                        name: '龟鹿二仙膏',
-                        form: '膏方',
-                        spec: '250g/盒',
-                        category: 'OTC药剂',
-                        positioning: '主推爆品',
-                        image: '',
-                        productionMode: '自产',
-                        unit: '盒',
-                        boxSpec: '20盒/箱',
-                        costPrice: 0,
-                        marketPrice: 0,
-                        dailyPrice: 268,
-                        minPrice: 0,
-                        internalPrice: 198,
-                        status: '在售',
-                        createdAt: '2026-05-11 17:00:00',
-                        updatedAt: '2026-05-11 17:00:00'
-                    },
-                    {
-                        id: 'P002',
-                        code: 'GL002',
-                        name: '龟甲胶',
-                        form: '胶块',
-                        spec: '500g/盒',
-                        category: 'OTC药剂',
-                        positioning: '核心产品',
-                        image: '',
-                        productionMode: '自产',
-                        unit: '盒',
-                        boxSpec: '15盒/箱',
-                        costPrice: 0,
-                        marketPrice: 0,
-                        dailyPrice: 450,
-                        minPrice: 0,
-                        internalPrice: 320,
-                        status: '在售',
-                        createdAt: '2026-05-11 17:00:00',
-                        updatedAt: '2026-05-11 17:00:00'
-                    },
-                    {
-                        id: 'P003',
-                        code: 'GL003',
-                        name: '龟甲胶',
-                        form: '胶粒',
-                        spec: '250g/盒',
-                        category: 'OTC药剂',
-                        positioning: '核心产品',
-                        image: '',
-                        productionMode: '自产',
-                        unit: '盒',
-                        boxSpec: '20盒/箱',
-                        costPrice: 0,
-                        marketPrice: 0,
-                        dailyPrice: 260,
-                        minPrice: 0,
-                        internalPrice: 180,
-                        status: '在售',
-                        createdAt: '2026-05-11 17:00:00',
-                        updatedAt: '2026-05-11 17:00:00'
-                    },
-                    {
-                        id: 'P004',
-                        code: 'GL004',
-                        name: '鹿角胶',
-                        form: '胶块',
-                        spec: '500g/盒',
-                        category: '中药饮片',
-                        positioning: '传统滋补',
-                        image: '',
-                        productionMode: '自产',
-                        unit: '盒',
-                        boxSpec: '15盒/箱',
-                        costPrice: 0,
-                        marketPrice: 0,
-                        dailyPrice: 520,
-                        minPrice: 0,
-                        internalPrice: 380,
-                        status: '在售',
-                        createdAt: '2026-05-11 17:00:00',
-                        updatedAt: '2026-05-11 17:00:00'
-                    },
-                    {
-                        id: 'P005',
-                        code: 'GL005',
-                        name: '龟鹿养生茶',
-                        form: '茶包',
-                        spec: '30袋/盒',
-                        category: '食品',
-                        positioning: '日常养生',
-                        image: '',
-                        productionMode: '自产',
-                        unit: '盒',
-                        boxSpec: '30盒/箱',
-                        costPrice: 0,
-                        marketPrice: 0,
-                        dailyPrice: 88,
-                        minPrice: 0,
-                        internalPrice: 58,
-                        status: '在研',
-                        createdAt: '2026-05-11 17:00:00',
-                        updatedAt: '2026-05-11 17:00:00'
-                    }
-                ];
-                localStorage.setItem('products', JSON.stringify(products));
+                localStorage.setItem('products', JSON.stringify([]));
             }
 
-            // 初始化销售人员（新版：账号+密码）
+            // 初始化销售人员（清空示例数据）
             if (!localStorage.getItem('salesStaff')) {
-                const salesStaff = [
-                    { id: 'S001', name: '张三', account: 'zhangsan', password: 'zs123456' },
-                    { id: 'S002', name: '李四', account: 'lisi', password: 'ls123456' }
-                ];
-                localStorage.setItem('salesStaff', JSON.stringify(salesStaff));
+                localStorage.setItem('salesStaff', JSON.stringify([]));
             }
 
             // 初始化订单
             if (!localStorage.getItem('orders')) {
-                const orders = [];
-                localStorage.setItem('orders', JSON.stringify(orders));
+                localStorage.setItem('orders', JSON.stringify([]));
             }
         }
 
