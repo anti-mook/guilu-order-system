@@ -2982,16 +2982,33 @@
         }
 
         // 获取产品类别
-        function getProductCategory(productName) {
+        function getProductCategory(productName, form, spec) {
             const products = JSON.parse(localStorage.getItem('products') || '[]');
-            const product = products.find(p => p.name === productName);
+            // 优先按名称+形态+规格精确匹配
+            let product = null;
+            if (form && spec) {
+                product = products.find(p => p.name === productName && p.form === form && p.spec === spec);
+            }
+            if (!product && form) {
+                product = products.find(p => p.name === productName && p.form === form);
+            }
+            if (!product) {
+                product = products.find(p => p.name === productName);
+            }
             return product ? product.category : '-';
         }
 
         // 获取产品形态
-        function getProductForm(productName) {
+        function getProductForm(productName, spec) {
             const products = JSON.parse(localStorage.getItem('products') || '[]');
-            const product = products.find(p => p.name === productName);
+            // 优先按名称+规格精确匹配
+            let product = null;
+            if (spec) {
+                product = products.find(p => p.name === productName && p.spec === spec);
+            }
+            if (!product) {
+                product = products.find(p => p.name === productName);
+            }
             return product ? (product.form || '-') : '-';
         }
 
@@ -3041,8 +3058,8 @@
             let expandedRows = [];
             for (const order of orders) {
                 for (const item of order.items) {
-                    const itemCategory = getProductCategory(item.productName);
-                    const itemForm = item.productForm || getProductForm(item.productName);
+                    const itemCategory = getProductCategory(item.productName, item.productForm, item.productSpec);
+                    const itemForm = item.productForm || getProductForm(item.productName, item.productSpec);
                     
                     // 应用类型筛选
                     if (filterOrderType && order.orderType !== filterOrderType) continue;
@@ -3127,7 +3144,7 @@
                 const order = row.order;
                 const item = row.item;
                 const category = row.category;
-                const itemForm = item.productForm || getProductForm(item.productName);
+                const itemForm = item.productForm || getProductForm(item.productName, item.productSpec);
 
                 // 判断是否显示作废按钮或恢复按钮
                 const showVoidBtn = !order.orderStatus || (order.orderStatus !== '作废' && order.orderStatus !== '退款');
@@ -3363,7 +3380,7 @@
                 const order = row.order;
                 const item = row.item;
                 const category = row.category;
-                const itemForm = item.productForm || getProductForm(item.productName);
+                const itemForm = item.productForm || getProductForm(item.productName, item.productSpec);
                 
                 // 获取状态文本
                 let statusText = '正常';
