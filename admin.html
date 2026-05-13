@@ -1009,8 +1009,8 @@
             }
             
             /* 导入弹窗 */
-            #importModal > div > div:last-child {
-                max-width: 95% !important;
+            #importModal [style*="max-width"] {
+                max-width: 92% !important;
             }
             
             /* 确认弹窗 */
@@ -1917,7 +1917,7 @@
     <div id="importModal" class="fixed inset-0 z-50 hidden">
         <div class="modal-overlay absolute inset-0" onclick="closeImportModal()"></div>
         <div class="relative z-10 flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-lg shadow-2xl w-full max-w-md fade-in">
+            <div class="bg-white rounded-lg shadow-2xl fade-in" style="width:100%;max-width:420px">
                 <div class="bg-green-600 text-white px-6 py-4 flex justify-between items-center">
                     <h3 class="text-lg font-bold"><i class="fas fa-file-import mr-2"></i>导入产品数据</h3>
                     <button onclick="closeImportModal()" class="text-white hover:text-gray-200">
