@@ -3031,23 +3031,26 @@
         _lastLocalWrite: 0,
         _pushTimer: null,
         _syncing: false,
+        _lastPushTime: 0,
+        _lastPullTime: 0,
         
         async pull() {
             if (this._syncing) return;
-            // 如果最近5秒有本地写入，跳过拉取
-            if (Date.now() - this._lastLocalWrite < 5000) return;
+            // 如果最近3秒有本地写入，跳过拉取
+            if (Date.now() - this._lastLocalWrite < 3000) return;
             try {
                 this._syncing = true;
                 const res = await fetch('/api/data');
                 if (!res.ok) return;
                 const cloudData = await res.json();
                 // 更新localStorage（仅更新云端有的key）
+                const originalSetItem = localStorage._originalSetItem || localStorage.__proto__.setItem.bind(localStorage);
                 ['products','salesStaff','orders','admins'].forEach(key => {
                     if (cloudData[key] !== undefined) {
-                        // 保存原始的setItem避免触发push
-                        localStorage.__proto__.setItem.call(localStorage, key, JSON.stringify(cloudData[key]));
+                        originalSetItem(key, JSON.stringify(cloudData[key]));
                     }
                 });
+                this._lastPullTime = Date.now();
                 // 刷新页面数据
                 products = JSON.parse(localStorage.getItem('products') || '[]');
                 salesStaff = JSON.parse(localStorage.getItem('salesStaff') || '[]');
@@ -3076,11 +3079,15 @@
                     body: JSON.stringify(data)
                 });
                 const result = await res.json();
-                if (!result.success) {
+                if (result.success) {
+                    this._lastPushTime = Date.now();
+                } else {
                     console.warn('DataSync push failed:', result.error);
+                    setTimeout(() => this.push(), 3000);
                 }
             } catch(e) {
                 console.warn('DataSync push failed:', e);
+                setTimeout(() => this.push(), 3000);
             }
         },
         
