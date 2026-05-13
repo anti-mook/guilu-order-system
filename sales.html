@@ -2611,11 +2611,11 @@
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-gray-600">订单类型：</span>
-                        <span class="px-2 py-0.5 text-xs rounded-full ${data.orderType === '内购' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}">${data.orderType}</span>
+                        <span class="px-2 py-0.5 text-xs rounded-full ${pendingOrderData.orderType === '内购' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}">${pendingOrderData.orderType}</span>
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-gray-600">订单渠道：</span>
-                        <span class="px-2 py-0.5 text-xs rounded-full ${data.salesMethod === '货到付款' ? 'bg-orange-100 text-orange-700' : 'bg-purple-100 text-purple-700'}">${data.salesMethod}</span>
+                        <span class="px-2 py-0.5 text-xs rounded-full ${pendingOrderData.salesMethod === '货到付款' ? 'bg-orange-100 text-orange-700' : 'bg-purple-100 text-purple-700'}">${pendingOrderData.salesMethod}</span>
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-gray-600">客户渠道：</span>
@@ -2623,7 +2623,7 @@
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-gray-600">录入人：</span>
-                        <span class="text-gray-900">${salesPerson}</span>
+                        <span class="text-gray-900">${pendingOrderData.salesPerson}</span>
                     </div>
                 </div>
                 <div class="space-y-2">
@@ -3238,10 +3238,42 @@
         
         async push() {
             try {
+                // push前先pull最新数据，合并本地修改后再push，避免覆盖其他客户端的数据
+                const localOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+                const localOrderIds = new Set(localOrders.map(o => o.id));
+                
+                // 获取云端最新数据
+                let cloudOrders = [];
+                try {
+                    const pullRes = await fetch('/api/data');
+                    if (pullRes.ok) {
+                        const cloudData = await pullRes.json();
+                        cloudOrders = cloudData.orders || [];
+                    }
+                } catch(e) {
+                    console.warn('DataSync push: pre-pull failed, using local data only');
+                }
+                
+                // 合并：云端有而本地没有的订单保留，本地有而云端没有的订单添加，两边都有的以本地为准（本地是最新修改）
+                const cloudOrderMap = new Map(cloudOrders.map(o => [o.id, o]));
+                const localOrderMap = new Map(localOrders.map(o => [o.id, o]));
+                
+                // 合并后的订单：本地所有 + 云端中本地没有的
+                const mergedOrders = [...localOrders];
+                for (const cloudOrder of cloudOrders) {
+                    if (!localOrderMap.has(cloudOrder.id)) {
+                        mergedOrders.push(cloudOrder);
+                    }
+                }
+                
+                // 更新本地localStorage（用原始方法避免触发push循环）
+                const originalSetItem = Storage.prototype.setItem.bind(localStorage);
+                originalSetItem('orders', JSON.stringify(mergedOrders));
+                
                 const data = {
                     products: JSON.parse(localStorage.getItem('products') || '[]'),
                     salesStaff: JSON.parse(localStorage.getItem('salesStaff') || '[]'),
-                    orders: JSON.parse(localStorage.getItem('orders') || '[]'),
+                    orders: mergedOrders,
                     admins: JSON.parse(localStorage.getItem('admins') || '[]'),
                 };
                 const res = await fetch('/api/data', {
