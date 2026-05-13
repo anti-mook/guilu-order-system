@@ -1581,14 +1581,14 @@
                             </div>
                             <div class="flex-1" style="min-width:180px">
                                 <label class="form-label">订单编号 <span class="required">*</span></label>
-                                <input type="text" id="orderNo" required class="form-input" placeholder="请先选择订单渠道" disabled>
+                                <input type="text" id="orderNo" required class="form-input" placeholder="请输入订单编号">
                             </div>
-                            <div class="flex items-center text-gray-400"></div>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-3 mt-3">
                             <div class="flex-1" style="min-width:180px">
                                 <label class="form-label">购买日期 <span class="required">*</span></label>
                                 <input type="date" id="purchaseDate" required class="form-input">
                             </div>
-                            <div class="flex items-center text-gray-400"></div>
                             <div class="flex-1" style="min-width:180px">
                                 <label class="form-label">订单类型 <span class="required">*</span></label>
                                 <select id="orderType" required class="form-select">
@@ -1596,7 +1596,6 @@
                                     <option value="纯销">纯销</option>
                                 </select>
                             </div>
-                            <div class="flex items-center text-gray-400"></div>
                             <div class="flex-1" style="min-width:180px">
                                 <label class="form-label">客户渠道 <span class="required">*</span></label>
                                 <select id="orderChannel" required class="form-select">
@@ -2344,10 +2343,12 @@
             
             if (salesMethod === '货到付款') {
                 generateDfOrderNo();
+                orderNoInput.disabled = true;
                 orderNoInput.readOnly = true;
                 orderNoInput.classList.add('bg-gray-100');
             } else {
                 orderNoInput.value = '';
+                orderNoInput.disabled = false;
                 orderNoInput.readOnly = false;
                 orderNoInput.classList.remove('bg-gray-100');
                 orderNoInput.placeholder = '请输入订单编号';
