@@ -4483,14 +4483,6 @@
                 const res = await fetch('/api/data');
                 if (!res.ok) return;
                 const cloudData = await res.json();
-                // 修复D1返回的orders.items是字符串的问题
-                if (cloudData.orders && Array.isArray(cloudData.orders)) {
-                    cloudData.orders = cloudData.orders.map(o => ({
-                        ...o,
-                        items: typeof o.items === 'string' ? JSON.parse(o.items) : (o.items || []),
-                        orderNo: o.orderNo || o.orderNumber || ''
-                    }));
-                }
                 // 更新localStorage（仅更新云端有的key）
                 const originalSetItem = Storage.prototype.setItem.bind(localStorage);
                 ['products','salesStaff','orders','admins'].forEach(key => {

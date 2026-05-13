@@ -24,7 +24,15 @@ export async function onRequestGet(context) {
             admins: admins.results || [],
             products: products.results || [],
             salesStaff: salesStaff.results || [],
-            orders: orders.results || []
+            orders: (orders.results || []).map(o => {
+                // D1列名orderNumber映射为前端字段orderNo，items字符串转数组
+                const { orderNumber, ...rest } = o;
+                return {
+                    ...rest,
+                    orderNo: orderNumber || rest.orderNo || '',
+                    items: typeof rest.items === 'string' ? JSON.parse(rest.items) : (rest.items || [])
+                };
+            })
         }), {
             headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
         });
@@ -103,7 +111,7 @@ export async function onRequestPost(context) {
         if (data.orders && data.orders.length > 0) {
             data.orders.forEach(o => {
                 stmts.push(db.prepare(`INSERT INTO orders (id, orderNumber, purchaseDate, orderType, channel, salesPerson, totalPrice, notes, items, orderStatus, appealStatus, appealType, appealReason, appealTime, replyContent, replyTime, createdBy, createdTime, lastModifiedBy, lastModifiedTime, deletedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
-                    .bind(o.id, o.orderNumber||'', o.purchaseDate||'', o.orderType||'', o.channel||'', o.salesPerson||'', o.totalPrice||0, o.notes||'', JSON.stringify(o.items||[]), o.orderStatus||'', o.appealStatus||'', o.appealType||'', o.appealReason||'', o.appealTime||'', o.replyContent||'', o.replyTime||'', o.createdBy||'', o.createdTime||'', o.lastModifiedBy||'', o.lastModifiedTime||'', o.deletedAt||''));
+                    .bind(o.id, o.orderNo||o.orderNumber||'', o.purchaseDate||'', o.orderType||'', o.channel||'', o.salesPerson||'', o.totalPrice||0, o.notes||'', JSON.stringify(o.items||[]), o.orderStatus||'', o.appealStatus||'', o.appealType||'', o.appealReason||'', o.appealTime||'', o.replyContent||'', o.replyTime||'', o.createdBy||'', o.createdTime||'', o.lastModifiedBy||'', o.lastModifiedTime||'', o.deletedAt||''));
             });
         }
         
