@@ -2045,7 +2045,8 @@
             const savedUser = sessionStorage.getItem('currentUser');
             if (savedUser) {
                 currentUser = JSON.parse(savedUser);
-                showMainContent();
+                // 先从云端拉最新数据，再显示主内容
+                DataSync.pull().then(() => showMainContent());
             } else {
                 showLoginPage();
             }
@@ -2157,7 +2158,8 @@
                 document.getElementById('salesLoginAccount').value = '';
                 document.getElementById('salesLoginPassword').value = '';
                 document.getElementById('salesLoginError').classList.add('hidden');
-                showMainContent();
+                // 先从云端拉最新数据，再显示主内容
+                DataSync.pull().then(() => showMainContent());
             } else {
                 showLoginError('账号或密码错误');
             }
@@ -2301,6 +2303,16 @@
         }
 
         // ==================== 商品行管理 ====================
+        // 刷新表单里的商品行下拉（pull数据后调用）
+        function refreshItemRows() {
+            const uniqueNames = getUniqueProductNames();
+            document.querySelectorAll('.product-name').forEach(select => {
+                const currentValue = select.value;
+                select.innerHTML = '<option value="">请选择</option>' + 
+                    uniqueNames.map(n => `<option value="${n}" ${n === currentValue ? 'selected' : ''}>${n}</option>`).join('');
+            });
+        }
+
         function addItemRow() {
             itemRowCount++;
             const container = document.getElementById('itemsContainer');
@@ -3057,6 +3069,8 @@
                 if (currentUser) {
                     renderOrderList();
                     updateFilterDropdowns();
+                    // 刷新表单里的商品行下拉
+                    refreshItemRows();
                 }
             } catch(e) {
                 console.warn('DataSync pull failed:', e);
