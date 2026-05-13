@@ -1959,6 +1959,10 @@
                             <label class="block text-gray-700 text-sm font-bold mb-2">回执内容</label>
                             <p id="replyContent" class="text-gray-600 bg-blue-50 p-3 rounded-lg"></p>
                         </div>
+                        <div id="appealHistoryContainer" class="hidden">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">历史申诉记录</label>
+                            <div id="appealHistoryList"></div>
+                        </div>
                     </div>
                 </div>
                 <div class="px-6 py-4 bg-gray-50 border-t flex justify-end">
@@ -2600,7 +2604,9 @@
                 appealContent: '',     // 申诉补充说明
                 appealTime: '',
                 replyContent: '',
-                replyTime: ''
+                replyTime: '',
+                appealCount: 0,        // 已申诉次数，最多3次
+                appealHistory: []      // 申诉历史记录
             };
             
             // 保存到localStorage
@@ -2792,11 +2798,23 @@
                 }
                 // 检查已处理/已回执状态 → 已回执 + 正常
                 else if (order.appealStatus === '已处理') {
-                    statusHtml = `<span class="px-2 py-0.5 text-xs rounded-full status-processed">已回执</span><span class="px-2 py-0.5 text-xs rounded-full status-normal" style="margin-left:4px">正常</span>`;
-                    actionBtns = `<button onclick="showReply('${order.id}')" class="appeal-btn relative group">
+                    const appealCount = order.appealCount || 0;
+                    const canAppeal = appealCount < 3;
+                    const countTag = appealCount > 0 ? `<span class="text-xs text-gray-400 ml-1">(${appealCount}/3)</span>` : '';
+                    statusHtml = `<span class="px-2 py-0.5 text-xs rounded-full status-processed">已回执</span><span class="px-2 py-0.5 text-xs rounded-full status-normal" style="margin-left:4px">正常</span>${countTag}`;
+                    
+                    let replyBtn = `<button onclick="showReply('${order.id}')" class="appeal-btn relative group">
                         <i class="fas fa-comment-alt mr-1"></i>查看回执
                         ${order.replyContent ? `<div class="reply-tooltip">${order.replyContent}</div>` : ''}
                     </button>`;
+                    
+                    if (canAppeal) {
+                        actionBtns = `${replyBtn}<button onclick="openAppealModal('${order.id}')" class="appeal-btn" style="margin-left:4px">
+                            <i class="fas fa-exclamation-circle mr-1"></i>再次申诉
+                        </button>`;
+                    } else {
+                        actionBtns = `${replyBtn}<span class="text-xs text-gray-400 ml-2">已达申诉上限</span>`;
+                    }
                 }
                 // 正常状态
                 else {
@@ -2850,6 +2868,12 @@
 
         // 打开申诉弹窗
         function openAppealModal(orderId) {
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            const order = orders.find(o => o.id === orderId);
+            if (order && (order.appealCount || 0) >= 3) {
+                showToast('该订单已达申诉上限（3次）', 'error');
+                return;
+            }
             document.getElementById('appealOrderId').value = orderId;
             document.getElementById('appealType').value = '';
             document.getElementById('appealContent').value = '';
@@ -2973,20 +2997,36 @@
             const index = orders.findIndex(o => o.id === orderId);
             
             if (index !== -1) {
+                // 保存上一轮申诉到历史
+                const prevAppeal = {
+                    appealType: orders[index].appealType,
+                    appealContent: orders[index].appealContent,
+                    appealTime: orders[index].appealTime,
+                    replyContent: orders[index].replyContent,
+                    replyTime: orders[index].replyTime
+                };
+                if (prevAppeal.appealType) {
+                    if (!orders[index].appealHistory) orders[index].appealHistory = [];
+                    orders[index].appealHistory.push(prevAppeal);
+                }
+                
                 orders[index].appealStatus = '申诉中';
                 orders[index].appealType = appealType;
                 orders[index].appealContent = appealContent;
                 orders[index].appealTime = formatDateTime(new Date());
+                orders[index].appealCount = (orders[index].appealCount || 0) + 1;
+                orders[index].replyContent = '';
+                orders[index].replyTime = '';
                 
                 localStorage.setItem('orders', JSON.stringify(orders));
                 closeAppealConfirmModal();
                 closeAppealModal();
                 renderOrderList();
-                showToast('申诉已提交', 'success');
+                showToast(`申诉已提交（第${orders[index].appealCount}次申诉）`, 'success');
             }
         }
 
-        // 显示回执内容
+        // 显示回执内容（含历史申诉记录）
         function showReply(orderId) {
             const orders = JSON.parse(localStorage.getItem('orders') || '[]');
             const order = orders.find(o => o.id === orderId);
@@ -2994,6 +3034,26 @@
             if (order && order.replyContent) {
                 document.getElementById('replyTime').textContent = order.replyTime || '-';
                 document.getElementById('replyContent').textContent = order.replyContent;
+                
+                // 显示历史申诉记录
+                const historyContainer = document.getElementById('appealHistoryContainer');
+                const historyList = document.getElementById('appealHistoryList');
+                if (order.appealHistory && order.appealHistory.length > 0) {
+                    historyList.innerHTML = order.appealHistory.map((h, i) => `
+                        <div class="border rounded-lg p-3 mb-2 bg-gray-50">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-xs font-semibold text-gray-600">第${i + 1}次申诉</span>
+                                <span class="text-xs text-gray-400">${h.appealTime || '-'}</span>
+                            </div>
+                            <div class="text-xs text-gray-500">类型：${h.appealType || '-'} | 内容：${h.appealContent || '-'}</div>
+                            <div class="text-xs text-blue-600 mt-1">回执：${h.replyContent || '-'}（${h.replyTime || '-'}）</div>
+                        </div>
+                    `).join('');
+                    historyContainer.classList.remove('hidden');
+                } else {
+                    historyContainer.classList.add('hidden');
+                }
+                
                 document.getElementById('replyModal').classList.remove('hidden');
             }
         }
