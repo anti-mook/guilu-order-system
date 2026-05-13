@@ -477,18 +477,31 @@
             min-height: 100vh;
             background: #f3f4f6;
         }
+        /* 页面布局 - 铺满视口 */
         .page-container {
             padding: 16px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
         
         /* 页面标题 */
         .page-header {
             margin-bottom: 12px;
+            flex-shrink: 0;
         }
         .page-title {
             font-size: 20px;
             font-weight: 600;
             color: #1f2937;
+        }
+        
+        .page-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
         
         /* 卡片样式 */
@@ -497,6 +510,16 @@
             border-radius: 8px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             overflow: hidden;
+        }
+        /* 产品货盘/销售数据的表格card撑满剩余空间 */
+        .card.flex-card {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .page-content > .card:not(.flex-card) {
+            flex-shrink: 0;
         }
         .card-header {
             padding: 16px 20px;
@@ -511,7 +534,7 @@
             border: 1px solid #e5e7eb;
             border-radius: 8px;
             overflow: auto;
-            max-height: calc(100vh - 160px);
+            flex: 1;
         }
         .data-table {
             width: 100%;
@@ -592,6 +615,7 @@
             align-items: center;
             padding: 16px;
             border-top: 1px solid #e5e7eb;
+            flex-shrink: 0;
         }
         .pagination-info {
             font-size: 13px;
@@ -1383,7 +1407,7 @@
                     </div>
 
                     <!-- 产品列表 -->
-                    <div class="card">
+                    <div class="card flex-card">
                         <div class="table-scroll-container">
                             <table class="data-table">
                                 <thead>
@@ -1513,7 +1537,7 @@
                     </div>
 
                     <!-- 销售数据列表 -->
-                    <div class="card">
+                    <div class="card flex-card">
                         <div class="table-scroll-container">
                             <table class="data-table">
                                 <thead>
