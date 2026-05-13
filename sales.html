@@ -2784,7 +2784,7 @@
                 let statusHtml = '';
                 let actionBtns = '';
                 const appealCount = order.appealCount || 0;
-                const appealRecordTag = appealCount > 0 ? `<span class="appeal-record-tag">已申诉${appealCount}次(${appealCount}/3)</span>` : '';
+                const appealCountTag = appealCount > 0 ? `<span class="appeal-record-tag">已申诉${appealCount}次(${appealCount}/3)</span>` : '';
                 
                 // 优先检查已删除状态
                 if (order.deletedAt) {
@@ -2798,36 +2798,36 @@
                 }
                 // 检查退款状态 → 退款 + 申诉按钮置灰
                 else if (order.orderStatus === '退款') {
-                    statusHtml = `<span class="px-2 py-0.5 text-xs rounded-full status-refunded">退款</span>`;
-                    actionBtns = `${appealRecordTag}<button disabled class="appeal-btn disabled"><i class="fas fa-exclamation-circle"></i> 申诉</button>`;
+                    statusHtml = `<span class="px-2 py-0.5 text-xs rounded-full status-refunded">退款</span>${appealCountTag}`;
+                    actionBtns = `<button disabled class="appeal-btn disabled"><i class="fas fa-exclamation-circle"></i> 申诉</button>`;
                 }
                 // 检查申诉中状态
                 else if (order.appealStatus === '申诉中') {
-                    statusHtml = `<span class="px-2 py-0.5 text-xs rounded-full status-appealed">申诉中</span>`;
+                    statusHtml = `<span class="px-2 py-0.5 text-xs rounded-full status-appealed">申诉中</span>${appealCountTag}`;
                     
                     if (order.appealType === '客户退款') {
-                        actionBtns = `${appealRecordTag}<span class="text-xs text-orange-500 mr-1">客户退款</span><button onclick="openEditAppealModal('${order.id}')" class="appeal-btn gray"><i class="fas fa-edit"></i> 编辑</button><button onclick="confirmCancelAppeal('${order.id}')" class="appeal-btn gray" style="margin-left:4px"><i class="fas fa-times"></i> 取消</button>`;
+                        actionBtns = `<span class="text-xs text-orange-500 mr-1">客户退款</span><button onclick="confirmCancelAppeal('${order.id}')" class="appeal-btn gray"><i class="fas fa-times"></i> 取消申诉</button>`;
                     } else {
-                        actionBtns = `${appealRecordTag}<span class="text-xs text-orange-500 mr-1">信息录错</span><button disabled class="appeal-btn disabled"><i class="fas fa-clock"></i> 申诉中</button>`;
+                        actionBtns = `<span class="text-xs text-orange-500 mr-1">信息录错</span><button disabled class="appeal-btn disabled"><i class="fas fa-clock"></i> 申诉中</button>`;
                     }
                 }
                 // 检查已处理状态 → 正常 + 查看回执 + 再次申诉
                 else if (order.appealStatus === '已处理') {
                     const canAppeal = appealCount < 3;
-                    statusHtml = `<span class="px-2 py-0.5 text-xs rounded-full status-normal">正常</span>`;
+                    statusHtml = `<span class="px-2 py-0.5 text-xs rounded-full status-normal">正常</span>${appealCountTag}`;
                     
                     let replyBtn = `<button onclick="showReply('${order.id}')" class="appeal-btn blue"><i class="fas fa-comment-alt"></i> 查看回执</button>`;
                     
                     if (canAppeal) {
-                        actionBtns = `${appealRecordTag}${replyBtn}<button onclick="openAppealModal('${order.id}')" class="appeal-btn" style="margin-left:4px"><i class="fas fa-exclamation-circle"></i> 再次申诉</button>`;
+                        actionBtns = `${replyBtn}<button onclick="openAppealModal('${order.id}')" class="appeal-btn" style="margin-left:4px"><i class="fas fa-exclamation-circle"></i> 再次申诉</button>`;
                     } else {
-                        actionBtns = `${appealRecordTag}${replyBtn}<span class="text-xs text-gray-400 ml-2">已达上限</span>`;
+                        actionBtns = `${replyBtn}<span class="text-xs text-gray-400 ml-2">已达上限</span>`;
                     }
                 }
                 // 正常状态
                 else {
                     statusHtml = `<span class="px-2 py-0.5 text-xs rounded-full status-normal">正常</span>`;
-                    actionBtns = `${appealRecordTag}<button onclick="openAppealModal('${order.id}')" class="appeal-btn"><i class="fas fa-exclamation-circle"></i> 申诉</button>`;
+                    actionBtns = `<button onclick="openAppealModal('${order.id}')" class="appeal-btn"><i class="fas fa-exclamation-circle"></i> 申诉</button>`;
                 }
                 
                 return `

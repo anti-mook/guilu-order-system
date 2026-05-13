@@ -25,15 +25,18 @@ export async function onRequestGet(context) {
             products: products.results || [],
             salesStaff: salesStaff.results || [],
             orders: (orders.results || []).map(o => {
-                // D1列名映射为前端字段名，items字符串转数组
-                const { orderNumber, createdTime, lastModifiedTime, lastModifiedBy, ...rest } = o;
+                // D1列名映射为前端字段名，items/appealHistory字符串转数组
+                const { orderNumber, createdTime, lastModifiedTime, lastModifiedBy, appealReason, ...rest } = o;
                 return {
                     ...rest,
                     orderNo: orderNumber || rest.orderNo || '',
                     submitTime: rest.submitTime || createdTime || '',
                     lastModifiedTime: rest.lastModifiedTime || lastModifiedTime || '',
                     lastModifiedBy: rest.lastModifiedBy || lastModifiedBy || '',
-                    items: typeof rest.items === 'string' ? JSON.parse(rest.items) : (rest.items || [])
+                    appealContent: rest.appealContent || appealReason || '',
+                    items: typeof rest.items === 'string' ? JSON.parse(rest.items) : (rest.items || []),
+                    appealCount: rest.appealCount || 0,
+                    appealHistory: typeof rest.appealHistory === 'string' ? JSON.parse(rest.appealHistory) : (rest.appealHistory || [])
                 };
             })
         }), {
@@ -113,8 +116,8 @@ export async function onRequestPost(context) {
         // 插入orders
         if (data.orders && data.orders.length > 0) {
             data.orders.forEach(o => {
-                stmts.push(db.prepare(`INSERT INTO orders (id, orderNumber, purchaseDate, orderType, channel, salesPerson, totalPrice, notes, items, orderStatus, appealStatus, appealType, appealReason, appealTime, replyContent, replyTime, createdBy, createdTime, lastModifiedBy, lastModifiedTime, deletedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
-                    .bind(o.id, o.orderNo||o.orderNumber||'', o.purchaseDate||'', o.orderType||'', o.channel||'', o.salesPerson||'', o.totalPrice||0, o.notes||'', JSON.stringify(o.items||[]), o.orderStatus||'', o.appealStatus||'', o.appealType||'', o.appealReason||'', o.appealTime||'', o.replyContent||'', o.replyTime||'', o.createdBy||o.salesPerson||'', o.createdTime||o.submitTime||'', o.lastModifiedBy||'', o.lastModifiedTime||'', o.deletedAt||''));
+                stmts.push(db.prepare(`INSERT INTO orders (id, orderNumber, purchaseDate, orderType, channel, salesPerson, totalPrice, notes, items, orderStatus, appealStatus, appealType, appealReason, appealTime, replyContent, replyTime, createdBy, createdTime, lastModifiedBy, lastModifiedTime, deletedAt, appealCount, appealHistory) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+                    .bind(o.id, o.orderNo||o.orderNumber||'', o.purchaseDate||'', o.orderType||'', o.channel||'', o.salesPerson||'', o.totalPrice||0, o.notes||'', JSON.stringify(o.items||[]), o.orderStatus||'', o.appealStatus||'', o.appealType||'', o.appealReason||o.appealContent||'', o.appealTime||'', o.replyContent||'', o.replyTime||'', o.createdBy||o.salesPerson||'', o.createdTime||o.submitTime||'', o.lastModifiedBy||'', o.lastModifiedTime||'', o.deletedAt||'', o.appealCount||0, JSON.stringify(o.appealHistory||[])));
             });
         }
         
@@ -138,7 +141,10 @@ async function ensureTables(db) {
         db.prepare(`CREATE TABLE IF NOT EXISTS admins (id TEXT PRIMARY KEY, username TEXT NOT NULL UNIQUE, password TEXT NOT NULL, name TEXT DEFAULT '')`),
         db.prepare(`CREATE TABLE IF NOT EXISTS products (id TEXT PRIMARY KEY, code TEXT DEFAULT '', name TEXT NOT NULL, form TEXT DEFAULT '', spec TEXT DEFAULT '', category TEXT DEFAULT '', positioning TEXT DEFAULT '', image TEXT DEFAULT '', productionMode TEXT DEFAULT '', unit TEXT DEFAULT '', boxSpec TEXT DEFAULT '', costPrice REAL DEFAULT 0, marketPrice REAL DEFAULT 0, dailyPrice REAL DEFAULT 0, minPrice REAL DEFAULT 0, internalPrice REAL DEFAULT 0, status TEXT DEFAULT '在售', createdAt TEXT DEFAULT '', updatedAt TEXT DEFAULT '')`),
         db.prepare(`CREATE TABLE IF NOT EXISTS sales_staff (id TEXT PRIMARY KEY, name TEXT NOT NULL, account TEXT NOT NULL UNIQUE, password TEXT NOT NULL)`),
-        db.prepare(`CREATE TABLE IF NOT EXISTS orders (id TEXT PRIMARY KEY, orderNumber TEXT DEFAULT '', purchaseDate TEXT DEFAULT '', orderType TEXT DEFAULT '', channel TEXT DEFAULT '', salesPerson TEXT DEFAULT '', totalPrice REAL DEFAULT 0, notes TEXT DEFAULT '', items TEXT DEFAULT '[]', orderStatus TEXT DEFAULT '', appealStatus TEXT DEFAULT '', appealType TEXT DEFAULT '', appealReason TEXT DEFAULT '', appealTime TEXT DEFAULT '', replyContent TEXT DEFAULT '', replyTime TEXT DEFAULT '', createdBy TEXT DEFAULT '', createdTime TEXT DEFAULT '', lastModifiedBy TEXT DEFAULT '', lastModifiedTime TEXT DEFAULT '', deletedAt TEXT DEFAULT '')`),
+        db.prepare(`CREATE TABLE IF NOT EXISTS orders (id TEXT PRIMARY KEY, orderNumber TEXT DEFAULT '', purchaseDate TEXT DEFAULT '', orderType TEXT DEFAULT '', channel TEXT DEFAULT '', salesPerson TEXT DEFAULT '', totalPrice REAL DEFAULT 0, notes TEXT DEFAULT '', items TEXT DEFAULT '[]', orderStatus TEXT DEFAULT '', appealStatus TEXT DEFAULT '', appealType TEXT DEFAULT '', appealReason TEXT DEFAULT '', appealTime TEXT DEFAULT '', replyContent TEXT DEFAULT '', replyTime TEXT DEFAULT '', createdBy TEXT DEFAULT '', createdTime TEXT DEFAULT '', lastModifiedBy TEXT DEFAULT '', lastModifiedTime TEXT DEFAULT '', deletedAt TEXT DEFAULT '', appealCount INTEGER DEFAULT 0, appealHistory TEXT DEFAULT '[]')`),
+        // 兼容旧表：添加新列
+        db.prepare(`ALTER TABLE orders ADD COLUMN appealCount INTEGER DEFAULT 0`).catch(()=>{}),
+        db.prepare(`ALTER TABLE orders ADD COLUMN appealHistory TEXT DEFAULT '[]'`).catch(()=>{}),
     ]);
 }
 
