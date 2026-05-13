@@ -15,8 +15,6 @@
         /* 自定义样式 */
         .tab-active { border-bottom: 3px solid #2563EB; color: #2563EB; }
         .modal-overlay { background-color: rgba(0,0,0,0.5); }
-        .thumbnail { max-width: 80px; max-height: 80px; object-fit: cover; }
-        .thumbnail-sm { width: 40px; height: 40px; object-fit: cover; border-radius: 4px; }
         .fade-in { animation: fadeIn 0.3s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         .toast { animation: slideIn 0.3s ease-out, fadeOut 0.3s ease-in 2.7s forwards; }
@@ -1832,19 +1830,7 @@
                                     <label class="block text-gray-700 text-sm font-bold mb-2">箱规</label>
                                     <input type="text" id="productBoxSpec" placeholder="如：20盒/箱" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none">
                                 </div>
-                                <div class="md:col-span-2">
-                                    <label class="block text-gray-700 text-sm font-bold mb-2">产品图片</label>
-                                    <div class="flex items-center space-x-4">
-                                        <input type="file" id="productImageInput" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
-                                        <button type="button" onclick="document.getElementById('productImageInput').click()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg transition">
-                                            <i class="fas fa-upload mr-2"></i>选择图片
-                                        </button>
-                                        <img id="productImagePreview" src="" class="thumbnail hidden border border-gray-300 rounded-lg">
-                                        <button type="button" id="removeImageBtn" onclick="removeProductImage()" class="hidden text-blue-500 hover:text-blue-700">
-                                            <i class="fas fa-trash"></i> 删除
-                                        </button>
-                                    </div>
-                                </div>
+
                             </div>
                         </div>
 
@@ -2218,7 +2204,7 @@
         // ==================== 全局变量 ====================
         let currentCategory = '全部';
         let currentStaffTab = 'sales';
-        let productImageBase64 = '';
+
         let currentEditingOrder = null;
         let currentEditingOrderItems = []; // 当前编辑订单的商品列表
         let currentAppealOrder = null; // 当前查看申诉详情的订单
@@ -2480,9 +2466,7 @@
             emptyState.classList.add('hidden');
             tbody.innerHTML = pageProducts.map(p => `
                 <tr class="hover:bg-gray-50 transition">
-                    <td class="px-4 py-3">
-                        ${p.image ? `<img src="${p.image}" class="thumbnail-sm">` : '<div class="w-10 h-10 bg-gray-200 rounded flex items-center justify-center"><i class="fas fa-image text-gray-400"></i></div>'}
-                    </td>
+
                     <td class="px-4 py-3 text-sm text-gray-900">${p.code}</td>
                     <td class="px-4 py-3 text-sm font-medium text-gray-900">${p.name}</td>
                     <td class="px-4 py-3 text-sm text-gray-600">${p.form || '-'}</td>
@@ -2558,18 +2542,11 @@
             document.getElementById('productModalTitle').textContent = product ? '编辑产品' : '新增产品';
             document.getElementById('productForm').reset();
             document.getElementById('productId').value = '';
-            productImageBase64 = '';
             
             // 隐藏自定义状态输入
             document.getElementById('customStatusWrapper').classList.add('hidden');
             document.getElementById('productCustomStatus').value = '';
             
-            // 重置图片预览
-            const preview = document.getElementById('productImagePreview');
-            preview.src = '';
-            preview.classList.add('hidden');
-            document.getElementById('removeImageBtn').classList.add('hidden');
-
             if (product) {
                 document.getElementById('productId').value = product.id;
                 document.getElementById('productCode').value = product.code;
@@ -2598,13 +2575,6 @@
                     document.getElementById('customStatusWrapper').classList.remove('hidden');
                     document.getElementById('productCustomStatus').value = product.status;
                 }
-
-                if (product.image) {
-                    productImageBase64 = product.image;
-                    preview.src = product.image;
-                    preview.classList.remove('hidden');
-                    document.getElementById('removeImageBtn').classList.remove('hidden');
-                }
             }
 
             document.getElementById('productModal').classList.remove('hidden');
@@ -2627,30 +2597,6 @@
             document.getElementById('productModal').classList.add('hidden');
         }
 
-        function handleImageUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    productImageBase64 = e.target.result;
-                    const preview = document.getElementById('productImagePreview');
-                    preview.src = productImageBase64;
-                    preview.classList.remove('hidden');
-                    document.getElementById('removeImageBtn').classList.remove('hidden');
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function removeProductImage() {
-            productImageBase64 = '';
-            const preview = document.getElementById('productImagePreview');
-            preview.src = '';
-            preview.classList.add('hidden');
-            document.getElementById('removeImageBtn').classList.add('hidden');
-            document.getElementById('productImageInput').value = '';
-        }
-
         function saveProduct() {
             const productId = document.getElementById('productId').value;
             const statusSelect = document.getElementById('productStatus').value;
@@ -2669,7 +2615,6 @@
                 spec: document.getElementById('productSpec').value,
                 category: document.getElementById('productCategory').value,
                 positioning: document.getElementById('productPositioning').value,
-                image: productImageBase64,
                 productionMode: document.getElementById('productProductionMode').value,
                 unit: document.getElementById('productUnit').value,
                 boxSpec: document.getElementById('productBoxSpec').value,
@@ -2807,7 +2752,6 @@
                     minPrice: parseFloat(fields[12]) || 0,
                     internalPrice: parseFloat(fields[13]) || 0,
                     status: fields[14] || '计划',
-                    image: '',
                     createdAt: formatDateTime(new Date()),
                     updatedAt: formatDateTime(new Date())
                 };

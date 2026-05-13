@@ -15,7 +15,7 @@ export async function onRequestGet(context) {
         // 4个SELECT合并为一个batch，一次网络往返
         const [admins, products, salesStaff, orders] = await db.batch([
             db.prepare('SELECT * FROM admins'),
-            db.prepare('SELECT * FROM products'),
+            db.prepare('SELECT id, code, name, form, spec, category, positioning, productionMode, unit, boxSpec, costPrice, marketPrice, dailyPrice, minPrice, internalPrice, status, createdAt, updatedAt FROM products'),
             db.prepare('SELECT * FROM sales_staff'),
             db.prepare('SELECT * FROM orders')
         ]);
