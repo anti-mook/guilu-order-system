@@ -2914,7 +2914,7 @@
         // ==================== 订单管理 ====================
         // 判断订单是否有效（不纳入统计的状态）
         function isOrderExcluded(order) {
-            return order.orderStatus === '作废' || order.orderStatus === '退款' || order.orderStatus === '退款取消' || order.deletedAt;
+            return order.orderStatus === '作废' || order.orderStatus === '退款' || order.deletedAt;
         }
 
         function initOrderFilters() {
@@ -2939,14 +2939,12 @@
                 if (anomalousOrderNos.has(o.orderNo)) statuses.add('异常');
                 if (o.orderStatus === '作废') statuses.add('作废');
                 if (o.orderStatus === '退款') statuses.add('退款');
-                if (o.orderStatus === '退款取消') statuses.add('退款取消');
                 if (o.appealStatus === '申诉中') statuses.add('申诉中');
-                if (o.appealStatus === '已处理') statuses.add('已处理');
-                if (!o.orderStatus && (!o.appealStatus || o.appealStatus === '') && !anomalousOrderNos.has(o.orderNo)) {
+                if ((!o.orderStatus || o.orderStatus === '') && (!o.appealStatus || o.appealStatus === '' || o.appealStatus === '已处理') && !anomalousOrderNos.has(o.orderNo)) {
                     statuses.add('正常');
                 }
             }
-            const sortedStatuses = ['正常', '异常', '申诉中', '已处理', '作废', '退款', '退款取消'].filter(s => statuses.has(s));
+            const sortedStatuses = ['正常', '异常', '申诉中', '作废', '退款'].filter(s => statuses.has(s));
             orderStatusSelect.innerHTML = '<option value="">全部</option>' + 
                 sortedStatuses.map(status => `<option value="${status}">${status}</option>`).join('');
         }
@@ -2997,10 +2995,9 @@
             return product ? (product.form || '-') : '-';
         }
 
-        // 获取订单状态显示 - 更新状态优先级
-        // 异常（红色）> 退款取消（浅蓝色）> 作废（灰色）> 退款（黄色）> 申诉中（橙色）> 已处理（蓝色）> 正常（绿色）
+        // 获取订单状态显示 - 状态只有：正常、申诉中、退款、作废、异常
         function getOrderStatusHtml(order) {
-            // 优先检查是否异常（不可点击，只显示提示）
+            // 优先检查是否异常
             if (anomalousOrderNos.has(order.orderNo)) {
                 return `<span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-700 cursor-help" title="该订单编号被不同人录入，请核实">异常</span>`;
             }
@@ -3015,19 +3012,14 @@
                 return `<span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-700">退款</span>`;
             }
             
-            // 检查退款取消状态（新增）
-            if (order.orderStatus === '退款取消') {
-                return `<span class="px-2 py-1 text-xs rounded-full bg-sky-100 text-sky-700">退款取消</span>`;
-            }
-            
+            // 申诉中
             const appealStatus = order.appealStatus || '';
             if (appealStatus === '申诉中') {
                 return `<span class="px-2 py-1 text-xs rounded-full bg-orange-100 text-orange-700 cursor-pointer hover:bg-orange-200" onclick="showAppealDetail('${order.id}')">申诉</span>`;
-            } else if (appealStatus === '已处理') {
-                return `<span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-700">已处理</span>`;
-            } else {
-                return `<span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-700">正常</span>`;
             }
+            
+            // 正常（已处理也是正常）
+            return `<span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-700">正常</span>`;
         }
 
         function renderOrderTable() {
@@ -3078,19 +3070,15 @@
                         let matchStatus = false;
                         if (filterOrderStatus === '正常') {
                             matchStatus = anomalousOrderNos.has(order.orderNo) ? false : 
-                                         (!order.orderStatus && (!order.appealStatus || order.appealStatus === ''));
+                                         (!order.orderStatus || order.orderStatus === '') && (!order.appealStatus || order.appealStatus === '' || order.appealStatus === '已处理');
                         } else if (filterOrderStatus === '异常') {
                             matchStatus = anomalousOrderNos.has(order.orderNo);
                         } else if (filterOrderStatus === '作废') {
                             matchStatus = order.orderStatus === '作废';
                         } else if (filterOrderStatus === '退款') {
                             matchStatus = order.orderStatus === '退款';
-                        } else if (filterOrderStatus === '退款取消') {
-                            matchStatus = order.orderStatus === '退款取消';
                         } else if (filterOrderStatus === '申诉中') {
                             matchStatus = order.appealStatus === '申诉中';
-                        } else if (filterOrderStatus === '已处理') {
-                            matchStatus = order.appealStatus === '已处理';
                         }
                         if (!matchStatus) continue;
                     }
