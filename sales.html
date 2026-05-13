@@ -3066,8 +3066,8 @@
                 const res = await fetch('/api/data');
                 if (!res.ok) return;
                 const cloudData = await res.json();
-                // 更新localStorage（仅更新云端有的key）
-                const originalSetItem = localStorage._originalSetItem || localStorage.__proto__.setItem.bind(localStorage);
+                // 更新localStorage（仅更新云端有的key，用原始方法避免触发push）
+                const originalSetItem = Storage.prototype.setItem;
                 ['products','salesStaff','orders','admins'].forEach(key => {
                     if (cloudData[key] !== undefined) {
                         originalSetItem(key, JSON.stringify(cloudData[key]));
