@@ -1457,8 +1457,8 @@
                                     <label>类型：</label>
                                     <select id="filterOrderType" onchange="applyOrderFilters()">
                                         <option value="">全部</option>
-                                        <option value="内购">内购</option>
-                                        <option value="纯销">纯销</option>
+                                        <option value="线上订单">线上订单</option>
+                                        <option value="货到付款">货到付款</option>
                                     </select>
                                 </div>
                                 <div class="filter-item">
@@ -1533,6 +1533,7 @@
                                     <tr>
                                         <th>状态</th>
                                         <th>订单编号</th>
+                                        <th>订单类型</th>
                                         <th>购买日期</th>
                                         <th>类型</th>
                                         <th>商品名称</th>
@@ -1689,8 +1690,8 @@
                                 <label>订单类型：</label>
                                 <select id="analyticsOrderType" onchange="renderAnalyticsData()">
                                     <option value="">全部</option>
-                                    <option value="纯销">纯销</option>
-                                    <option value="内购">内购</option>
+                                    <option value="线上订单">线上订单</option>
+                                    <option value="货到付款">货到付款</option>
                                 </select>
                             </div>
                         </div>
@@ -2006,8 +2007,8 @@
                             <div>
                                 <label class="block text-gray-700 text-sm font-bold mb-2">类型</label>
                                 <select id="editOrderType" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none">
-                                    <option value="内购">内购</option>
-                                    <option value="纯销">纯销</option>
+                                    <option value="线上订单">线上订单</option>
+                                    <option value="货到付款">货到付款</option>
                                 </select>
                             </div>
                             <div>
@@ -3172,9 +3173,10 @@
                     <tr class="hover:bg-gray-50 transition ${order.orderStatus === '作废' ? 'bg-gray-50 text-gray-400' : ''}">
                         <td class="px-4 py-3 text-sm">${getOrderStatusHtml(order)}</td>
                         <td class="px-4 py-3 text-sm font-medium text-gray-900">${order.orderNo}</td>
-                        <td class="px-4 py-3 text-sm text-gray-600">${order.purchaseDate}</td>
                         <td class="px-4 py-3 text-sm">
-                            <span class="px-2 py-1 text-xs rounded-full ${order.orderType === '内购' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}">${order.orderType}</span>
+                            <span class="px-2 py-1 text-xs rounded-full ${order.orderType === '货到付款' ? 'bg-orange-100 text-orange-700' : 'bg-blue-100 text-blue-700'}">${order.orderType}</span>
+                        </td>
+                        <td class="px-4 py-3 text-sm text-gray-600">${order.purchaseDate}</td>
                         </td>
                         <td class="px-4 py-3 text-sm text-gray-600">${item.productName}</td>
                         <td class="px-4 py-3 text-sm text-gray-600">${itemForm}</td>
@@ -4053,7 +4055,7 @@
                             <div class="flex-1">
                                 <div class="flex items-center gap-2 mb-2">
                                     <span class="font-semibold text-gray-900">${order.orderNo}</span>
-                                    <span class="px-2 py-0.5 text-xs rounded-full ${order.orderType === '内购' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}">${order.orderType}</span>
+                                    <span class="px-2 py-0.5 text-xs rounded-full ${order.orderType === '货到付款' ? 'bg-orange-100 text-orange-700' : 'bg-blue-100 text-blue-700'}">${order.orderType}</span>
                                     <span class="px-2 py-0.5 text-xs rounded-full bg-gray-200 text-gray-600">已删除</span>
                                 </div>
                                 <div class="text-sm text-gray-500">
