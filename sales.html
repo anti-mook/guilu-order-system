@@ -775,13 +775,13 @@
             background: #f0f4ff;
         }
         
-        /* 申诉按钮 - 橙色圆角 */
+        /* 申诉按钮 - 统一样式 */
         .appeal-btn {
             background: #ea580c;
             color: white;
-            padding: 6px 12px;
+            padding: 4px 10px;
             border-radius: 6px;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 500;
             border: none;
             cursor: pointer;
@@ -792,6 +792,35 @@
         }
         .appeal-btn:hover {
             background: #c2410c;
+        }
+        .appeal-btn.disabled {
+            background: #d1d5db;
+            color: #9ca3af;
+            cursor: not-allowed;
+        }
+        .appeal-btn.disabled:hover {
+            background: #d1d5db;
+        }
+        .appeal-btn.blue {
+            background: #2563eb;
+        }
+        .appeal-btn.blue:hover {
+            background: #1d4ed8;
+        }
+        .appeal-btn.gray {
+            background: #6b7280;
+        }
+        .appeal-btn.gray:hover {
+            background: #4b5563;
+        }
+        /* 申诉记录标签 */
+        .appeal-record-tag {
+            font-size: 11px;
+            color: #9ca3af;
+            background: #f3f4f6;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-right: 6px;
         }
         
         /* 只读输入框 */
@@ -2754,69 +2783,51 @@
                 // 状态显示 - 根据管理后台的状态同步显示
                 let statusHtml = '';
                 let actionBtns = '';
+                const appealCount = order.appealCount || 0;
+                const appealRecordTag = appealCount > 0 ? `<span class="appeal-record-tag">已申诉${appealCount}次(${appealCount}/3)</span>` : '';
                 
                 // 优先检查已删除状态
                 if (order.deletedAt) {
                     statusHtml = `<span class="px-2 py-0.5 text-xs rounded-full status-deleted">已删除</span>`;
-                    actionBtns = `<button disabled class="px-2 py-1 bg-gray-300 text-gray-500 rounded text-xs cursor-not-allowed">已删除</button>`;
+                    actionBtns = `<button disabled class="appeal-btn disabled">已删除</button>`;
                 }
                 // 检查作废状态
                 else if (order.orderStatus === '作废') {
                     statusHtml = `<span class="px-2 py-0.5 text-xs rounded-full status-voided">作废</span>`;
-                    actionBtns = `<button disabled class="px-2 py-1 bg-gray-300 text-gray-500 rounded text-xs cursor-not-allowed">已作废</button>`;
+                    actionBtns = `<button disabled class="appeal-btn disabled">已作废</button>`;
                 }
                 // 检查退款状态 → 退款 + 申诉按钮置灰
                 else if (order.orderStatus === '退款') {
                     statusHtml = `<span class="px-2 py-0.5 text-xs rounded-full status-refunded">退款</span>`;
-                    actionBtns = `<button disabled class="px-2 py-1 bg-gray-300 text-gray-500 rounded text-xs cursor-not-allowed">申诉</button>`;
+                    actionBtns = `${appealRecordTag}<button disabled class="appeal-btn disabled"><i class="fas fa-exclamation-circle"></i> 申诉</button>`;
                 }
                 // 检查申诉中状态
                 else if (order.appealStatus === '申诉中') {
                     statusHtml = `<span class="px-2 py-0.5 text-xs rounded-full status-appealed">申诉中</span>`;
                     
-                    // 根据申诉类型显示不同按钮
                     if (order.appealType === '客户退款') {
-                        // 客户退款：可编辑、可取消
-                        actionBtns = `
-                            <span class="text-xs text-orange-600 mr-2">（客户退款）</span>
-                            <button onclick="openEditAppealModal('${order.id}')" class="appeal-btn">
-                                <i class="fas fa-edit mr-1"></i>编辑申诉
-                            </button>
-                            <button onclick="confirmCancelAppeal('${order.id}')" class="px-2 py-1 bg-gray-500 text-white rounded text-xs hover:bg-gray-600 transition ml-1 border-0">
-                                <i class="fas fa-times mr-1"></i>取消申诉
-                            </button>
-                        `;
+                        actionBtns = `${appealRecordTag}<span class="text-xs text-orange-500 mr-1">客户退款</span><button onclick="openEditAppealModal('${order.id}')" class="appeal-btn gray"><i class="fas fa-edit"></i> 编辑</button><button onclick="confirmCancelAppeal('${order.id}')" class="appeal-btn gray" style="margin-left:4px"><i class="fas fa-times"></i> 取消</button>`;
                     } else {
-                        // 信息录错：不可编辑不可取消
-                        actionBtns = `<button disabled class="px-2 py-1 bg-gray-300 text-gray-500 rounded text-xs cursor-not-allowed">申诉中</button>`;
+                        actionBtns = `${appealRecordTag}<span class="text-xs text-orange-500 mr-1">信息录错</span><button disabled class="appeal-btn disabled"><i class="fas fa-clock"></i> 申诉中</button>`;
                     }
                 }
                 // 检查已处理状态 → 正常 + 查看回执 + 再次申诉
                 else if (order.appealStatus === '已处理') {
-                    const appealCount = order.appealCount || 0;
                     const canAppeal = appealCount < 3;
-                    const countTag = appealCount > 0 ? `<span class="text-xs text-gray-400 ml-1">已申诉${appealCount}次（${appealCount}/3）</span>` : '';
-                    statusHtml = `<span class="px-2 py-0.5 text-xs rounded-full status-normal">正常</span>${countTag}`;
+                    statusHtml = `<span class="px-2 py-0.5 text-xs rounded-full status-normal">正常</span>`;
                     
-                    let replyBtn = `<button onclick="showReply('${order.id}')" class="appeal-btn relative group">
-                        <i class="fas fa-comment-alt mr-1"></i>查看回执
-                        ${order.replyContent ? `<div class="reply-tooltip">${order.replyContent}</div>` : ''}
-                    </button>`;
+                    let replyBtn = `<button onclick="showReply('${order.id}')" class="appeal-btn blue"><i class="fas fa-comment-alt"></i> 查看回执</button>`;
                     
                     if (canAppeal) {
-                        actionBtns = `${replyBtn}<button onclick="openAppealModal('${order.id}')" class="appeal-btn" style="margin-left:4px">
-                            <i class="fas fa-exclamation-circle mr-1"></i>再次申诉
-                        </button>`;
+                        actionBtns = `${appealRecordTag}${replyBtn}<button onclick="openAppealModal('${order.id}')" class="appeal-btn" style="margin-left:4px"><i class="fas fa-exclamation-circle"></i> 再次申诉</button>`;
                     } else {
-                        actionBtns = `${replyBtn}<span class="text-xs text-gray-400 ml-2">已达申诉上限</span>`;
+                        actionBtns = `${appealRecordTag}${replyBtn}<span class="text-xs text-gray-400 ml-2">已达上限</span>`;
                     }
                 }
                 // 正常状态
                 else {
                     statusHtml = `<span class="px-2 py-0.5 text-xs rounded-full status-normal">正常</span>`;
-                    actionBtns = `<button onclick="openAppealModal('${order.id}')" class="appeal-btn">
-                        <i class="fas fa-exclamation-circle mr-1"></i>申诉
-                    </button>`;
+                    actionBtns = `${appealRecordTag}<button onclick="openAppealModal('${order.id}')" class="appeal-btn"><i class="fas fa-exclamation-circle"></i> 申诉</button>`;
                 }
                 
                 return `
@@ -3021,36 +3032,60 @@
             }
         }
 
-        // 显示回执内容（含历史申诉记录）
+        // 显示回执内容（含当前+历史申诉记录）
         function showReply(orderId) {
             const orders = JSON.parse(localStorage.getItem('orders') || '[]');
             const order = orders.find(o => o.id === orderId);
             
-            if (order && order.replyContent) {
-                document.getElementById('replyTime').textContent = order.replyTime || '-';
-                document.getElementById('replyContent').textContent = order.replyContent;
-                
-                // 显示历史申诉记录
-                const historyContainer = document.getElementById('appealHistoryContainer');
-                const historyList = document.getElementById('appealHistoryList');
-                if (order.appealHistory && order.appealHistory.length > 0) {
-                    historyList.innerHTML = order.appealHistory.map((h, i) => `
-                        <div class="border rounded-lg p-3 mb-2 bg-gray-50">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="text-xs font-semibold text-gray-600">第${i + 1}次申诉</span>
-                                <span class="text-xs text-gray-400">${h.appealTime || '-'}</span>
-                            </div>
-                            <div class="text-xs text-gray-500">类型：${h.appealType || '-'} | 内容：${h.appealContent || '-'}</div>
-                            <div class="text-xs text-blue-600 mt-1">回执：${h.replyContent || '-'}（${h.replyTime || '-'}）</div>
-                        </div>
-                    `).join('');
-                    historyContainer.classList.remove('hidden');
-                } else {
-                    historyContainer.classList.add('hidden');
-                }
-                
-                document.getElementById('replyModal').classList.remove('hidden');
+            if (!order) return;
+            
+            // 构建所有申诉记录（历史 + 当前）
+            const allRecords = [];
+            if (order.appealHistory && order.appealHistory.length > 0) {
+                order.appealHistory.forEach((h, i) => {
+                    allRecords.push({ ...h, index: i + 1 });
+                });
             }
+            
+            // 当前这一轮（如果有replyContent或appealStatus===已处理）
+            if (order.replyContent || order.appealStatus === '已处理') {
+                allRecords.push({
+                    appealType: order.appealType,
+                    appealContent: order.appealContent,
+                    appealTime: order.appealTime,
+                    replyContent: order.replyContent,
+                    replyTime: order.replyTime,
+                    index: allRecords.length + 1
+                });
+            }
+            
+            if (allRecords.length === 0) return;
+            
+            // 显示最新的回执
+            const latest = allRecords[allRecords.length - 1];
+            document.getElementById('replyTime').textContent = latest.replyTime || '-';
+            document.getElementById('replyContent').textContent = latest.replyContent || '-';
+            
+            // 显示全部申诉记录
+            const historyContainer = document.getElementById('appealHistoryContainer');
+            const historyList = document.getElementById('appealHistoryList');
+            if (allRecords.length > 0) {
+                historyList.innerHTML = allRecords.map(r => `
+                    <div class="border rounded-lg p-3 mb-2 ${r.index === allRecords.length ? 'bg-blue-50 border-blue-200' : 'bg-gray-50'}">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs font-semibold ${r.index === allRecords.length ? 'text-blue-600' : 'text-gray-600'}">第${r.index}次申诉</span>
+                            <span class="text-xs text-gray-400">${r.appealTime || '-'}</span>
+                        </div>
+                        <div class="text-xs text-gray-500">类型：${r.appealType || '-'} | 原因：${r.appealContent || '-'}</div>
+                        <div class="text-xs text-blue-600 mt-1">回执：${r.replyContent || '-'}（${r.replyTime || '-'}）</div>
+                    </div>
+                `).join('');
+                historyContainer.classList.remove('hidden');
+            } else {
+                historyContainer.classList.add('hidden');
+            }
+            
+            document.getElementById('replyModal').classList.remove('hidden');
         }
 
         function closeReplyModal() {
