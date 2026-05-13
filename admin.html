@@ -1330,7 +1330,7 @@
                                         <label>产品类别：</label>
                                         <select id="filterCategory" onchange="applyProductFilters()">
                                             <option value="">全部</option>
-                                            <option value="OTC药剂">OTC药剂</option>
+                                            <option value="OTC胶剂">OTC胶剂</option>
                                             <option value="食品">食品</option>
                                             <option value="中药饮片">中药饮片</option>
                                         </select>
@@ -1452,7 +1452,7 @@
                                     <label>类别：</label>
                                     <select id="filterOrderCategory" onchange="applyOrderFilters()">
                                         <option value="">全部</option>
-                                        <option value="OTC药剂">OTC药剂</option>
+                                        <option value="OTC胶剂">OTC胶剂</option>
                                         <option value="食品">食品</option>
                                         <option value="中药饮片">中药饮片</option>
                                     </select>
@@ -1811,7 +1811,7 @@
                                     <label class="block text-gray-700 text-sm font-bold mb-2">产品类别 <span class="text-blue-500">*</span></label>
                                     <select id="productCategory" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none">
                                         <option value="">请选择</option>
-                                        <option value="OTC药剂">OTC药剂</option>
+                                        <option value="OTC胶剂">OTC胶剂</option>
                                         <option value="食品">食品</option>
                                         <option value="中药饮片">中药饮片</option>
                                     </select>
@@ -1937,7 +1937,7 @@
                     <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px;font-size:12px;color:#374151;line-height:1.6">
                         <strong>CSV格式说明：</strong><br>
                         产品编码,产品名称,产品形态,产品规格,产品类别,产品定位,生产模式,计量单位,箱规,考核成本,市场价,日常价,最低价,内购价,产品状态<br>
-                        <span style="color:#6b7280">示例：GL001,龟鹿二仙膏,膏方,250g/盒,OTC药剂,主推爆品,自产,盒,20盒/箱,0,0,268,0,198,在售</span>
+                        <span style="color:#6b7280">示例：GL001,龟鹿二仙膏,膏方,250g/盒,OTC胶剂,主推爆品,自产,盒,20盒/箱,0,0,268,0,198,在售</span>
                     </div>
                 </div>
                 <div style="padding:12px 24px 20px;display:flex;justify-content:space-between;align-items:center;gap:10px">
@@ -2489,7 +2489,7 @@
                     <td class="px-4 py-3 text-sm text-gray-600">${p.spec || '-'}</td>
                     <td class="px-4 py-3 text-sm">
                         <span class="px-2 py-1 text-xs rounded-full ${
-                            p.category === 'OTC药剂' ? 'bg-blue-100 text-blue-700' :
+                            p.category === 'OTC胶剂' ? 'bg-blue-100 text-blue-700' :
                             p.category === '食品' ? 'bg-green-100 text-green-700' :
                             'bg-purple-100 text-purple-700'
                         }">${p.category}</span>
@@ -3153,7 +3153,7 @@
                         <td class="px-4 py-3 text-sm text-gray-600">${item.productSpec || '-'}</td>
                         <td class="px-4 py-3 text-sm">
                             <span class="px-2 py-1 text-xs rounded-full ${
-                                category === 'OTC药剂' ? 'bg-blue-100 text-blue-700' :
+                                category === 'OTC胶剂' ? 'bg-blue-100 text-blue-700' :
                                 category === '食品' ? 'bg-green-100 text-green-700' :
                                 'bg-purple-100 text-purple-700'
                             }">${category}</span>
@@ -4511,7 +4511,7 @@
         // 下载CSV模板
         function downloadCSVTemplate() {
             const header = '产品编码,产品名称,产品形态,产品规格,产品类别,产品定位,生产模式,计量单位,箱规,考核成本,市场价,日常价,最低价,内购价,产品状态';
-            const example = 'GL001,龟鹿二仙膏,膏方,250g/盒,OTC药剂,主推爆品,自产,盒,20盒/箱,0,0,268,0,198,在售';
+            const example = 'GL001,龟鹿二仙膏,膏方,250g/盒,OTC胶剂,主推爆品,自产,盒,20盒/箱,0,0,268,0,198,在售';
             const csvContent = '\uFEFF' + header + '\n' + example + '\n';
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
