@@ -3067,7 +3067,7 @@
                 if (!res.ok) return;
                 const cloudData = await res.json();
                 // 更新localStorage（仅更新云端有的key，用原始方法避免触发push）
-                const originalSetItem = Storage.prototype.setItem;
+                const originalSetItem = Storage.prototype.setItem.bind(localStorage);
                 ['products','salesStaff','orders','admins'].forEach(key => {
                     if (cloudData[key] !== undefined) {
                         originalSetItem(key, JSON.stringify(cloudData[key]));
