@@ -1,25 +1,4 @@
-// Cloudflare Pages Function - D1数据库版本
-// 数据同步API：前端 → Cloudflare Functions → Cloudflare D1数据库
-
-// 默认数据
-function getDefaultData() {
-    return {
-        products: [],
-        salesStaff: [],
-        orders: [],
-        admins: [{ id: 'A001', username: 'admin', password: 'admin123', name: '管理员' }]
-    };
-}
-
-// 初始化数据库表结构
-async function ensureTables(db) {
-    await db.batch([
-        db.prepare(`CREATE TABLE IF NOT EXISTS admins (id TEXT PRIMARY KEY, username TEXT NOT NULL UNIQUE, password TEXT NOT NULL, name TEXT DEFAULT '')`),
-        db.prepare(`CREATE TABLE IF NOT EXISTS products (id TEXT PRIMARY KEY, code TEXT DEFAULT '', name TEXT NOT NULL, form TEXT DEFAULT '', spec TEXT DEFAULT '', category TEXT DEFAULT '', positioning TEXT DEFAULT '', image TEXT DEFAULT '', productionMode TEXT DEFAULT '', unit TEXT DEFAULT '', boxSpec TEXT DEFAULT '', costPrice REAL DEFAULT 0, marketPrice REAL DEFAULT 0, dailyPrice REAL DEFAULT 0, minPrice REAL DEFAULT 0, internalPrice REAL DEFAULT 0, status TEXT DEFAULT '在售', createdAt TEXT DEFAULT '', updatedAt TEXT DEFAULT '')`),
-        db.prepare(`CREATE TABLE IF NOT EXISTS sales_staff (id TEXT PRIMARY KEY, name TEXT NOT NULL, account TEXT NOT NULL UNIQUE, password TEXT NOT NULL)`),
-        db.prepare(`CREATE TABLE IF NOT EXISTS orders (id TEXT PRIMARY KEY, orderNumber TEXT DEFAULT '', purchaseDate TEXT DEFAULT '', orderType TEXT DEFAULT '', channel TEXT DEFAULT '', salesPerson TEXT DEFAULT '', totalPrice REAL DEFAULT 0, notes TEXT DEFAULT '', items TEXT DEFAULT '[]', orderStatus TEXT DEFAULT '', appealStatus TEXT DEFAULT '', appealType TEXT DEFAULT '', appealReason TEXT DEFAULT '', appealTime TEXT DEFAULT '', replyContent TEXT DEFAULT '', replyTime TEXT DEFAULT '', createdBy TEXT DEFAULT '', createdTime TEXT DEFAULT '', lastModifiedBy TEXT DEFAULT '', lastModifiedTime TEXT DEFAULT '', deletedAt TEXT DEFAULT '')`),
-    ]);
-}
+// Cloudflare Pages Function - D1数据库版本（优化性能）
 
 // GET /api/data - 从D1读取全量数据
 export async function onRequestGet(context) {
@@ -33,13 +12,13 @@ export async function onRequestGet(context) {
     }
 
     try {
-        // 确保表存在
-        await ensureTables(db);
-        
-        const admins = await db.prepare('SELECT * FROM admins').all();
-        const products = await db.prepare('SELECT * FROM products').all();
-        const salesStaff = await db.prepare('SELECT * FROM sales_staff').all();
-        const orders = await db.prepare('SELECT * FROM orders').all();
+        // 4个SELECT合并为一个batch，一次网络往返
+        const [admins, products, salesStaff, orders] = await db.batch([
+            db.prepare('SELECT * FROM admins'),
+            db.prepare('SELECT * FROM products'),
+            db.prepare('SELECT * FROM sales_staff'),
+            db.prepare('SELECT * FROM orders')
+        ]);
         
         return new Response(JSON.stringify({
             admins: admins.results || [],
@@ -50,6 +29,17 @@ export async function onRequestGet(context) {
             headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
         });
     } catch (err) {
+        // 如果是表不存在的错误，返回空数据
+        if (err.message && err.message.includes('no such table')) {
+            return new Response(JSON.stringify({
+                admins: [],
+                products: [],
+                salesStaff: [],
+                orders: []
+            }), {
+                headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+            });
+        }
         console.error('D1 read error:', err);
         return new Response(JSON.stringify({ error: err.message }), {
             status: 500,
@@ -71,10 +61,9 @@ export async function onRequestPost(context) {
 
     try {
         const data = await context.request.json();
-        // D1版本不再需要SHA乐观锁
         delete data._sha;
 
-        // 确保表存在
+        // 确保表存在（只在写入时执行，读取时不执行）
         await ensureTables(db);
         
         // 使用事务覆盖写入
@@ -130,6 +119,16 @@ export async function onRequestPost(context) {
             headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
         });
     }
+}
+
+// 初始化数据库表结构（仅在写入时调用）
+async function ensureTables(db) {
+    await db.batch([
+        db.prepare(`CREATE TABLE IF NOT EXISTS admins (id TEXT PRIMARY KEY, username TEXT NOT NULL UNIQUE, password TEXT NOT NULL, name TEXT DEFAULT '')`),
+        db.prepare(`CREATE TABLE IF NOT EXISTS products (id TEXT PRIMARY KEY, code TEXT DEFAULT '', name TEXT NOT NULL, form TEXT DEFAULT '', spec TEXT DEFAULT '', category TEXT DEFAULT '', positioning TEXT DEFAULT '', image TEXT DEFAULT '', productionMode TEXT DEFAULT '', unit TEXT DEFAULT '', boxSpec TEXT DEFAULT '', costPrice REAL DEFAULT 0, marketPrice REAL DEFAULT 0, dailyPrice REAL DEFAULT 0, minPrice REAL DEFAULT 0, internalPrice REAL DEFAULT 0, status TEXT DEFAULT '在售', createdAt TEXT DEFAULT '', updatedAt TEXT DEFAULT '')`),
+        db.prepare(`CREATE TABLE IF NOT EXISTS sales_staff (id TEXT PRIMARY KEY, name TEXT NOT NULL, account TEXT NOT NULL UNIQUE, password TEXT NOT NULL)`),
+        db.prepare(`CREATE TABLE IF NOT EXISTS orders (id TEXT PRIMARY KEY, orderNumber TEXT DEFAULT '', purchaseDate TEXT DEFAULT '', orderType TEXT DEFAULT '', channel TEXT DEFAULT '', salesPerson TEXT DEFAULT '', totalPrice REAL DEFAULT 0, notes TEXT DEFAULT '', items TEXT DEFAULT '[]', orderStatus TEXT DEFAULT '', appealStatus TEXT DEFAULT '', appealType TEXT DEFAULT '', appealReason TEXT DEFAULT '', appealTime TEXT DEFAULT '', replyContent TEXT DEFAULT '', replyTime TEXT DEFAULT '', createdBy TEXT DEFAULT '', createdTime TEXT DEFAULT '', lastModifiedBy TEXT DEFAULT '', lastModifiedTime TEXT DEFAULT '', deletedAt TEXT DEFAULT '')`),
+    ]);
 }
 
 // OPTIONS /api/data - CORS预检
