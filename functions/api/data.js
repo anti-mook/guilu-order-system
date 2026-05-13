@@ -116,8 +116,8 @@ export async function onRequestPost(context) {
         // 插入orders
         if (data.orders && data.orders.length > 0) {
             data.orders.forEach(o => {
-                stmts.push(db.prepare(`INSERT INTO orders (id, orderNumber, purchaseDate, orderType, channel, salesPerson, totalPrice, notes, items, orderStatus, appealStatus, appealType, appealReason, appealTime, replyContent, replyTime, createdBy, createdTime, lastModifiedBy, lastModifiedTime, deletedAt, appealCount, appealHistory) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
-                    .bind(o.id, o.orderNo||o.orderNumber||'', o.purchaseDate||'', o.orderType||'', o.channel||'', o.salesPerson||'', o.totalPrice||0, o.notes||'', JSON.stringify(o.items||[]), o.orderStatus||'', o.appealStatus||'', o.appealType||'', o.appealReason||o.appealContent||'', o.appealTime||'', o.replyContent||'', o.replyTime||'', o.createdBy||o.salesPerson||'', o.createdTime||o.submitTime||'', o.lastModifiedBy||'', o.lastModifiedTime||'', o.deletedAt||'', o.appealCount||0, JSON.stringify(o.appealHistory||[])));
+                stmts.push(db.prepare(`INSERT INTO orders (id, orderNumber, purchaseDate, orderType, salesMethod, channel, salesPerson, totalPrice, notes, items, orderStatus, appealStatus, appealType, appealReason, appealTime, replyContent, replyTime, createdBy, createdTime, lastModifiedBy, lastModifiedTime, deletedAt, appealCount, appealHistory) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+                    .bind(o.id, o.orderNo||o.orderNumber||'', o.purchaseDate||'', o.orderType||'', o.salesMethod||'线上订单', o.channel||'', o.salesPerson||'', o.totalPrice||0, o.notes||'', JSON.stringify(o.items||[]), o.orderStatus||'', o.appealStatus||'', o.appealType||'', o.appealReason||o.appealContent||'', o.appealTime||'', o.replyContent||'', o.replyTime||'', o.createdBy||o.salesPerson||'', o.createdTime||o.submitTime||'', o.lastModifiedBy||'', o.lastModifiedTime||'', o.deletedAt||'', o.appealCount||0, JSON.stringify(o.appealHistory||[])));
             });
         }
         
@@ -145,7 +145,8 @@ async function ensureTables(db) {
     ]);
     // 兼容旧表：尝试添加新列（已存在则忽略）
     try { await db.exec(`ALTER TABLE orders ADD COLUMN appealCount INTEGER DEFAULT 0`); } catch(e) {}
-    try { await db.exec(`ALTER TABLE orders ADD COLUMN appealHistory TEXT DEFAULT '[]'`); } catch(e) {}
+    try { await db.exec(`ALTER TABLE orders ADD COLUMN appealHistory TEXT DEFAULT '[]'`);
+            try { await db.exec(`ALTER TABLE orders ADD COLUMN salesMethod TEXT DEFAULT '线上订单'`); } catch(e) {} } catch(e) {}
 }
 
 // OPTIONS /api/data - CORS预检

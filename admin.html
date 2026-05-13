@@ -3393,7 +3393,7 @@
             }
 
             // CSV表头
-            const headers = ['状态', '订单编号', '购买日期', '类型', '商品名称', '产品形态', '产品规格', '类别', '数量', '订单价格', '客户渠道', '录入人', '提交时间', '最后修改', '修改人'];
+            const headers = ['状态', '订单编号', '订单渠道', '购买日期', '类型', '商品名称', '产品形态', '产品规格', '类别', '数量', '订单价格', '客户渠道', '录入人', '提交时间', '最后修改', '修改人'];
             
             // CSV数据行
             const rows = filteredOrders.map(row => {
@@ -3421,6 +3421,7 @@
                 return [
                     statusText,
                     order.orderNo,
+                    order.salesMethod || '线上订单',
                     order.purchaseDate,
                     order.orderType,
                     item.productName,
@@ -3571,6 +3572,7 @@
             document.getElementById('editOrderNo').value = order.orderNo;
             document.getElementById('editPurchaseDate').value = order.purchaseDate;
             document.getElementById('editOrderType').value = order.orderType;
+            document.getElementById('editSalesMethod').value = order.salesMethod || '线上订单';
             document.getElementById('editChannel').value = order.channel || '';
             document.getElementById('editTotalPrice').value = order.totalPrice;
 
@@ -3696,6 +3698,7 @@
             if (index !== -1) {
                 orders[index].purchaseDate = document.getElementById('editPurchaseDate').value;
                 orders[index].orderType = document.getElementById('editOrderType').value;
+                orders[index].salesMethod = document.getElementById('editSalesMethod').value;
                 orders[index].channel = document.getElementById('editChannel').value;
                 orders[index].totalPrice = parseFloat(document.getElementById('editTotalPrice').value) || 0;
                 orders[index].salesPerson = document.getElementById('editSalesPerson').value;

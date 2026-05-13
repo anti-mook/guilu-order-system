@@ -45,6 +45,7 @@ CREATE TABLE IF NOT EXISTS orders (
     orderNumber TEXT DEFAULT '',
     purchaseDate TEXT DEFAULT '',
     orderType TEXT DEFAULT '',
+    salesMethod TEXT DEFAULT '线上订单',
     channel TEXT DEFAULT '',
     salesPerson TEXT DEFAULT '',
     totalPrice REAL DEFAULT 0,

@@ -1573,8 +1573,15 @@
                         </h3>
                         <div class="flex flex-wrap items-center gap-3">
                             <div class="flex-1" style="min-width:180px">
+                                <label class="form-label">订单渠道 <span class="required">*</span></label>
+                                <select id="salesMethod" required class="form-select" onchange="onSalesMethodChange()">
+                                    <option value="线上订单">线上订单</option>
+                                    <option value="货到付款">货到付款</option>
+                                </select>
+                            </div>
+                            <div class="flex-1" style="min-width:180px">
                                 <label class="form-label">订单编号 <span class="required">*</span></label>
-                                <input type="text" id="orderNo" required class="form-input" placeholder="请输入订单编号">
+                                <input type="text" id="orderNo" required class="form-input" placeholder="请先选择订单渠道" disabled>
                             </div>
                             <div class="flex items-center text-gray-400"></div>
                             <div class="flex-1" style="min-width:180px">
@@ -1584,9 +1591,9 @@
                             <div class="flex items-center text-gray-400"></div>
                             <div class="flex-1" style="min-width:180px">
                                 <label class="form-label">订单类型 <span class="required">*</span></label>
-                                <select id="orderType" required class="form-select" onchange="onOrderTypeChange()">
-                                    <option value="线上订单">线上订单</option>
-                                    <option value="货到付款">货到付款</option>
+                                <select id="orderType" required class="form-select">
+                                    <option value="内购">内购</option>
+                                    <option value="纯销">纯销</option>
                                 </select>
                             </div>
                             <div class="flex items-center text-gray-400"></div>
@@ -1693,8 +1700,8 @@
                             <span class="filter-label">类型</span>
                             <select id="filterOrderType" onchange="applyRealtimeFilter()" class="filter-select">
                                 <option value="">全部</option>
-                                <option value="线上订单">线上订单</option>
-                                <option value="货到付款">货到付款</option>
+                                <option value="内购">内购</option>
+                                <option value="纯销">纯销</option>
                             </select>
                         </div>
                     </div>
@@ -2316,27 +2323,27 @@
         }
 
         // ==================== 订单号生成 ====================
-        function generateOrderNo() {
+        function generateDfOrderNo() {
             const today = formatDate(new Date()).replace(/-/g, '');
             const orders = JSON.parse(localStorage.getItem('orders') || '[]');
             
-            // 获取今天的所有DF订单（全局编号，不区分销售人员）
+            // 获取所有DF开头的今日货到付款订单（全局编号，不区分销售人员）
             const todayDfOrders = orders.filter(o => o.orderNo && o.orderNo.startsWith('DF' + today));
             
-            // 生成序号
+            // 生成序号（4位）
             const sequence = String(todayDfOrders.length + 1).padStart(4, '0');
             const orderNo = 'DF' + today + sequence;
             
             document.getElementById('orderNo').value = orderNo;
         }
         
-        // 订单类型变更：货到付款自动生成编号并锁定，线上订单解锁手动输入
-        function onOrderTypeChange() {
-            const orderType = document.getElementById('orderType').value;
+        // 订单渠道变更：货到付款自动生成DF编号并锁定，线上订单解锁手动输入
+        function onSalesMethodChange() {
+            const salesMethod = document.getElementById('salesMethod').value;
             const orderNoInput = document.getElementById('orderNo');
             
-            if (orderType === '货到付款') {
-                generateOrderNo();
+            if (salesMethod === '货到付款') {
+                generateDfOrderNo();
                 orderNoInput.readOnly = true;
                 orderNoInput.classList.add('bg-gray-100');
             } else {
@@ -2349,7 +2356,9 @@
 
         // ==================== 订单编号校验 ====================
         function validateOrderNo(orderNo) {
-            // 支持线上订单编号和DF开头的货到付款编号
+            // 货到付款的DF编号是系统自动生成的，不需要校验格式
+            if (orderNo.startsWith('DF')) return true;
+            // 线上订单编号：首位字母或数字，整体至少10位
             const regex = /^[A-Za-z0-9]\w{9,}$/;
             return regex.test(orderNo);
         }
@@ -2518,9 +2527,15 @@
                 }
             });
             
-            // 验证订单编号格式（24位纯数字）
+            // 验证订单编号
             if (!orderNo) {
                 showToast('请输入订单编号', 'error');
+                return null;
+            }
+            // 线上订单才校验编号格式，货到付款的DF编号跳过
+            const salesMethod = document.getElementById('salesMethod').value;
+            if (salesMethod === '线上订单' && !validateOrderNo(orderNo)) {
+                showToast('订单编号格式不正确', 'error');
                 return null;
             }
             if (!validateOrderNo(orderNo)) {
@@ -2559,12 +2574,14 @@
             if (!data) return;
             
             const orderType = document.getElementById('orderType').value;
+            const salesMethod = document.getElementById('salesMethod').value;
             const salesPerson = currentUser.name;
             
             // 保存待提交的数据
             pendingOrderData = {
                 ...data,
                 orderType,
+                salesMethod,
                 salesPerson
             };
             
@@ -2593,7 +2610,11 @@
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-gray-600">订单类型：</span>
-                        <span class="px-2 py-0.5 text-xs rounded-full ${data.orderType === '货到付款' ? 'bg-orange-100 text-orange-700' : 'bg-blue-100 text-blue-700'}">${data.orderType}</span>
+                        <span class="px-2 py-0.5 text-xs rounded-full ${data.orderType === '内购' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}">${data.orderType}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">订单渠道：</span>
+                        <span class="px-2 py-0.5 text-xs rounded-full ${data.salesMethod === '货到付款' ? 'bg-orange-100 text-orange-700' : 'bg-purple-100 text-purple-700'}">${data.salesMethod}</span>
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-gray-600">客户渠道：</span>
@@ -2637,6 +2658,7 @@
                 orderNo: pendingOrderData.orderNo,
                 purchaseDate: pendingOrderData.purchaseDate,
                 orderType: pendingOrderData.orderType,
+                salesMethod: pendingOrderData.salesMethod,
                 items: pendingOrderData.items,
                 channel: pendingOrderData.channel,
                 totalPrice: pendingOrderData.totalPrice,
@@ -2691,6 +2713,13 @@
 
         function resetForm() {
             document.getElementById('orderForm').reset();
+            // 重置订单渠道为线上订单，解锁订单编号
+            document.getElementById('salesMethod').value = '线上订单';
+            const orderNoInput = document.getElementById('orderNo');
+            orderNoInput.disabled = false;
+            orderNoInput.readOnly = false;
+            orderNoInput.classList.remove('bg-gray-100');
+            orderNoInput.placeholder = '请输入订单编号';
             document.getElementById('purchaseDate').value = formatDate(new Date());
             document.getElementById('orderChannel').value = ''; // 重置客户渠道
             
@@ -2861,7 +2890,8 @@
                             <span class="font-semibold text-gray-900">${order.orderNo}</span>
                             <span class="text-xs text-gray-500">共 ${totalQuantity} 件</span>
                             <span class="text-sm text-gray-700">${order.purchaseDate}</span>
-                            <span class="px-2 py-0.5 text-xs rounded-full ${order.orderType === '货到付款' ? 'bg-orange-100 text-orange-700' : 'bg-blue-100 text-blue-700'}">${order.orderType}</span>
+                            <span class="px-2 py-0.5 text-xs rounded-full ${order.orderType === '内购' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}">${order.orderType}</span>
+                            <span class="px-2 py-0.5 text-xs rounded-full ${order.salesMethod === '货到付款' ? 'bg-orange-100 text-orange-700' : 'bg-purple-100 text-purple-700'}">${order.salesMethod || '线上订单'}</span>
                             ${statusHtml}
                             <span class="price-display">¥${order.totalPrice.toFixed(2)}</span>
                         </div>
