@@ -1697,7 +1697,7 @@
                     </div>
                 </div>
 
-                <!-- 上方2个数据卡片（订单数 + GMV） -->
+                <!-- 上方4个数据卡片（订单数 + 退款 / GMV + 订单均价） -->
                 <div class="grid md:grid-cols-2 gap-4 mb-4">
                     <div class="stat-card">
                         <div class="stat-card-title">订单数</div>
@@ -1708,6 +1708,18 @@
                         <div class="stat-card-title">GMV</div>
                         <div class="stat-card-value" id="stat-today-gmv">¥0</div>
                         <div class="stat-card-sub" id="stat-yesterday-gmv"></div>
+                    </div>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4 mb-4">
+                    <div class="stat-card">
+                        <div class="stat-card-title">退款</div>
+                        <div class="stat-card-value" id="stat-refund-amount">¥0</div>
+                        <div class="stat-card-sub" id="stat-refund-count"></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-title">订单均价</div>
+                        <div class="stat-card-value" id="stat-avg-price">¥0</div>
+                        <div class="stat-card-sub" id="stat-avg-price-detail"></div>
                     </div>
                 </div>
 
@@ -4280,6 +4292,22 @@
             const gmvTrend = gmvChange >= 0 ? '↑' : '↓';
             document.getElementById('stat-yesterday-gmv').innerHTML = 
                 `对比${prevPeriod.start}至${prevPeriod.end}：¥${prevGmv.toLocaleString()} <span class="${gmvChange >= 0 ? 'trend-up' : 'trend-down'}">${gmvTrend}${Math.abs(gmvChange)}%</span>`;
+            
+            // 退款卡片
+            const refundOrders = currentOrders.filter(o => o.orderStatus === '退款');
+            const refundAmount = refundOrders.reduce((sum, o) => sum + (o.totalPrice || 0), 0);
+            document.getElementById('stat-refund-amount').textContent = `¥${refundAmount.toLocaleString()}`;
+            document.getElementById('stat-refund-count').textContent = `退款订单：${refundOrders.length}单`;
+            
+            // 订单均价卡片 - 有效订单（排除作废、删除、退款）
+            const validOrders = currentOrders.filter(o => 
+                o.orderStatus !== '作废' && !o.deletedAt && o.orderStatus !== '退款'
+            );
+            const validOrderCount = validOrders.length;
+            const validGmv = validOrders.reduce((sum, o) => sum + (o.totalPrice || 0), 0);
+            const avgPrice = validOrderCount > 0 ? (validGmv / validOrderCount) : 0;
+            document.getElementById('stat-avg-price').textContent = `¥${avgPrice.toFixed(2)}`;
+            document.getElementById('stat-avg-price-detail').textContent = `有效订单${validOrderCount}单 / GMV ¥${validGmv.toLocaleString()}`;
             
             // 单王和销冠
             const salesStats = {};
