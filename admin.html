@@ -2736,22 +2736,41 @@
             const fileInput = document.getElementById('importFileInput');
             const textArea = document.getElementById('importTextArea');
             
-            let csvData = '';
-            
             if (fileInput.files.length > 0) {
                 const file = fileInput.files[0];
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    csvData = e.target.result;
+                    const buffer = e.target.result;
+                    const csvData = decodeCSVBuffer(buffer);
                     processImportData(csvData);
                 };
-                reader.readAsText(file);
+                reader.readAsArrayBuffer(file);
             } else if (textArea.value.trim()) {
-                csvData = textArea.value.trim();
-                processImportData(csvData);
+                processImportData(textArea.value.trim());
             } else {
                 showToast('请上传CSV文件或粘贴CSV数据', 'error');
                 return;
+            }
+        }
+
+        // 自动检测CSV编码并解码（解决Excel保存GBK乱码问题）
+        function decodeCSVBuffer(buffer) {
+            const uint8 = new Uint8Array(buffer);
+            // 检测BOM
+            if (uint8[0] === 0xEF && uint8[1] === 0xBB && uint8[2] === 0xBF) {
+                return new TextDecoder('utf-8').decode(uint8.slice(3));
+            }
+            // 尝试UTF-8解码，如果出现乱码则用GBK
+            const utf8Text = new TextDecoder('utf-8', { fatal: false }).decode(uint8);
+            // 检测是否有乱码（UTF-8解码失败会产生替换字符）
+            if (utf8Text.indexOf('\uFFFD') === -1) {
+                return utf8Text;
+            }
+            // 回退到GBK解码
+            try {
+                return new TextDecoder('gbk').decode(uint8);
+            } catch(e) {
+                return utf8Text;
             }
         }
 
