@@ -2652,6 +2652,15 @@
             // 重置表单
             resetForm();
             
+            // 重置筛选和页码
+            currentPage = 1;
+            document.getElementById('filterOrderNo').value = '';
+            document.getElementById('filterProduct').value = '';
+            document.getElementById('filterChannel').value = '';
+            document.getElementById('filterOrderType').value = '';
+            document.getElementById('filterDateFrom').value = '';
+            document.getElementById('filterDateTo').value = '';
+            
             // 刷新订单列表
             renderOrderList();
             
@@ -2697,6 +2706,7 @@
         }
 
         function renderOrderList() {
+            try {
             const filterOrderNo = document.getElementById('filterOrderNo').value.trim().toLowerCase();
             const filterProduct = document.getElementById('filterProduct').value;
             const filterChannel = document.getElementById('filterChannel').value;
@@ -2853,6 +2863,7 @@
                     </div>
                 `;
             }).join('');
+            } catch(e) { console.error('renderOrderList error:', e); }
         }
 
         // 上一页
