@@ -1496,6 +1496,9 @@
                                         <option value="抖音包裹卡">抖音包裹卡</option>
                                         <option value="淘系包裹卡">淘系包裹卡</option>
                                         <option value="京东包裹卡">京东包裹卡</option>
+                                        <option value="客户转介绍">客户转介绍</option>
+                                        <option value="小程序获客">小程序获客</option>
+                                        <option value="个微客户">个微客户</option>
                                     </select>
                                 </div>
                                 <div class="filter-item">
@@ -2007,6 +2010,9 @@
                                     <option value="抖音包裹卡">抖音包裹卡</option>
                                     <option value="淘系包裹卡">淘系包裹卡</option>
                                     <option value="京东包裹卡">京东包裹卡</option>
+                                    <option value="客户转介绍">客户转介绍</option>
+                                    <option value="小程序获客">小程序获客</option>
+                                    <option value="个微客户">个微客户</option>
                                 </select>
                             </div>
                             <div>
@@ -4493,23 +4499,13 @@
             const container = document.getElementById('chart-channel-gmv');
             if (!container) return;
             
-            const channels = ['百度推广', '小红书推广', '视频号推广', '公众号推广', '抖音推广', '抖音包裹卡', '淘系包裹卡', '京东包裹卡'];
-            
+            // 从实际订单数据中动态提取所有渠道（不硬编码，新增渠道自动包含）
             const gmvByChannel = {};
-            channels.forEach(c => gmvByChannel[c] = 0);
-            
-            const orderMap = {};
-            orders.forEach(o => {
-                if (!orderMap[o.id]) {
-                    orderMap[o.id] = o;
-                }
+            orders.forEach(order => {
+                const ch = order.channel || '未填写';
+                gmvByChannel[ch] = (gmvByChannel[ch] || 0) + (order.totalPrice || 0);
             });
-            Object.values(orderMap).forEach(order => {
-                const ch = order.channel || '';
-                if (gmvByChannel.hasOwnProperty(ch)) {
-                    gmvByChannel[ch] += order.totalPrice || 0;
-                }
-            });
+            const channels = Object.keys(gmvByChannel);
             
             const channelData = channels.map(c => ({ name: c, value: gmvByChannel[c] || 0 })).filter(c => c.value > 0);
             
