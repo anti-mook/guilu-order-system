@@ -3978,7 +3978,7 @@
                                     录入人: ${order.salesPerson} | 删除时间: ${order.deletedAt}
                                 </div>
                             </div>
-                            <button onclick="openRecoverConfirm('${order.id}')" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition flex items-center">
+                            <button onclick="quickRecoverFromBin('${order.id}')" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition flex items-center">
                                 <i class="fas fa-undo mr-2"></i>恢复
                             </button>
                         </div>
@@ -4023,6 +4023,23 @@
             document.getElementById('recoverConfirmModal').classList.add('hidden');
         }
         
+        // 回收站一键恢复（无需确认）
+        function quickRecoverFromBin(orderId) {
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            const orderIndex = orders.findIndex(o => o.id === orderId);
+            
+            if (orderIndex !== -1) {
+                orders[orderIndex].deletedAt = '';
+                orders[orderIndex].lastModifiedTime = formatDateTime(new Date());
+                orders[orderIndex].lastModifiedBy = sessionStorage.getItem('currentAdmin') || 'admin';
+                
+                localStorage.setItem('orders', JSON.stringify(orders));
+                closeRecycleBin();
+                applyOrderFilters();
+                showToast('订单已恢复', 'success');
+            }
+        }
+
         function doRecoverFromBin() {
             if (!currentRecoverOrderId) return;
             
