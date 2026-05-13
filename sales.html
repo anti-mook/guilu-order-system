@@ -2268,14 +2268,14 @@
             return names;
         }
 
-        // 根据产品名称获取形态列表
+        // 根据产品名称获取形态列表（去重）
         function getFormsByProductName(name) {
-            return products.filter(p => p.name === name).map(p => p.form);
+            return [...new Set(products.filter(p => p.name === name).map(p => p.form).filter(Boolean))];
         }
 
-        // 根据产品名称和形态获取规格列表
+        // 根据产品名称和形态获取规格列表（去重）
         function getSpecsByNameAndForm(name, form) {
-            return products.filter(p => p.name === name && p.form === form).map(p => p.spec);
+            return [...new Set(products.filter(p => p.name === name && p.form === form).map(p => p.spec).filter(Boolean))];
         }
 
         // ==================== 订单号生成 ====================
