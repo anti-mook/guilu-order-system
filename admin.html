@@ -1801,7 +1801,7 @@
                                 </div>
                                 <div>
                                     <label class="block text-gray-700 text-sm font-bold mb-2">产品形态</label>
-                                    <input type="text" id="productForm" placeholder="如：胶块、胶粒、膏方" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none">
+                                    <input type="text" id="productFormType" placeholder="如：胶块、胶粒、膏方" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none">
                                 </div>
                                 <div>
                                     <label class="block text-gray-700 text-sm font-bold mb-2">产品规格</label>
@@ -2574,7 +2574,7 @@
                 document.getElementById('productId').value = product.id;
                 document.getElementById('productCode').value = product.code;
                 document.getElementById('productName').value = product.name;
-                document.getElementById('productForm').value = product.form || '';
+                document.getElementById('productFormType').value = product.form || '';
                 document.getElementById('productSpec').value = product.spec || '';
                 document.getElementById('productCategory').value = product.category;
                 document.getElementById('productPositioning').value = product.positioning || '';
@@ -2665,7 +2665,7 @@
                 id: productId || 'P' + Date.now(),
                 code: document.getElementById('productCode').value,
                 name: document.getElementById('productName').value,
-                form: document.getElementById('productForm').value,
+                form: document.getElementById('productFormType').value,
                 spec: document.getElementById('productSpec').value,
                 category: document.getElementById('productCategory').value,
                 positioning: document.getElementById('productPositioning').value,
