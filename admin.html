@@ -477,17 +477,13 @@
             min-height: 100vh;
             background: #f3f4f6;
         }
-        /* 页面布局 - 铺满视口 */
         .page-container {
             padding: 16px;
-            height: 100vh;
-            overflow: hidden;
         }
         
         /* 页面标题 */
         .page-header {
             margin-bottom: 12px;
-            flex-shrink: 0;
         }
         .page-title {
             font-size: 20px;
@@ -496,10 +492,6 @@
         }
         
         .page-content {
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
         }
         
         /* 卡片样式 */
@@ -511,13 +503,11 @@
         }
         /* 产品货盘/销售数据的表格card撑满剩余空间 */
         .card.flex-card {
-            flex: 1;
             display: flex;
             flex-direction: column;
             overflow: hidden;
         }
         .page-content > .card:not(.flex-card) {
-            flex-shrink: 0;
         }
         .card-header {
             padding: 16px 20px;
@@ -532,7 +522,6 @@
             border: 1px solid #e5e7eb;
             border-radius: 8px;
             overflow: auto;
-            flex: 1;
         }
         .data-table {
             width: 100%;
@@ -613,7 +602,6 @@
             align-items: center;
             padding: 16px;
             border-top: 1px solid #e5e7eb;
-            flex-shrink: 0;
         }
         .pagination-info {
             font-size: 13px;
@@ -2375,6 +2363,42 @@
         }
 
         // ==================== 页面切换 ====================
+        // 动态调整表格高度，让分页按钮始终可见
+        function adjustTableHeight() {
+            document.querySelectorAll('.table-scroll-container').forEach(container => {
+                const card = container.closest('.flex-card');
+                if (!card) return;
+                // 计算可用高度：视口高度 - 页面padding - card上方所有元素高度 - 分页高度 - 边距
+                const pageContainer = card.closest('.page-container');
+                const pageContent = card.closest('.page-content');
+                if (!pageContainer || !pageContent) return;
+                
+                const viewportH = window.innerHeight;
+                const containerTop = pageContainer.getBoundingClientRect().top;
+                const containerPadding = 32; // page-container padding 16*2
+                
+                // card上方所有元素的高度
+                let aboveHeight = 0;
+                const siblings = pageContent.children;
+                for (let i = 0; i < siblings.length; i++) {
+                    if (siblings[i] === card) break;
+                    aboveHeight += siblings[i].offsetHeight;
+                }
+                
+                // card内部非表格区域的高度（分页等）
+                const pagination = card.querySelector('.pagination');
+                const paginationH = pagination ? pagination.offsetHeight : 0;
+                const emptyHint = card.querySelector('[id$="Empty"]');
+                const emptyH = (emptyHint && !emptyHint.classList.contains('hidden')) ? emptyHint.offsetHeight : 0;
+                
+                const availableH = viewportH - containerTop - containerPadding - aboveHeight - paginationH - 40; // 40px余量
+                container.style.maxHeight = Math.max(200, availableH) + 'px';
+            });
+        }
+
+        // 窗口大小变化时重新计算
+        window.addEventListener('resize', adjustTableHeight);
+
         function switchTab(tab) {
             // 移动端切换页面后关闭侧边栏
             if (window.innerWidth <= 768) {
@@ -2395,6 +2419,9 @@
                 page.classList.add('hidden');
             });
             document.getElementById('page-' + tab).classList.remove('hidden');
+
+            // 调整表格高度适配屏幕
+            adjustTableHeight();
 
             // 如果切换到产品页面
             if (tab === 'products') {
