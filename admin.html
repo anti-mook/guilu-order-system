@@ -3346,7 +3346,7 @@
             const index = orders.findIndex(o => o.id === currentAppealOrder.id);
             
             if (index !== -1) {
-                orders[index].orderStatus = '退款取消';
+                orders[index].orderStatus = '';
                 orders[index].appealStatus = '已处理';
                 orders[index].replyContent = '不同意退款';
                 orders[index].replyTime = formatDateTime(new Date());
@@ -3356,7 +3356,7 @@
                 localStorage.setItem('orders', JSON.stringify(orders));
                 closeAppealModal();
                 applyOrderFilters();
-                showToast('已不同意退款', 'success');
+                showToast('已不同意退款，订单恢复正常', 'success');
             }
         }
 
