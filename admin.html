@@ -507,9 +507,21 @@
         }
         
         /* 表格样式 */
+        .table-scroll-container {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            overflow: auto;
+            max-height: 70vh;
+        }
         .data-table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        .data-table thead {
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
         .data-table th {
             background: #eff6ff;
@@ -517,17 +529,18 @@
             text-align: left;
             font-size: 12px;
             font-weight: 500;
-            color: #6b7280;
+            color: #4b5563;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             white-space: nowrap;
-            border-bottom: 1px solid #e5e7eb;
+            border-bottom: 2px solid #d1d5db;
         }
         .data-table td {
             padding: 12px 16px;
             font-size: 14px;
             color: #374151;
             border-bottom: 1px solid #f3f4f6;
+            border-right: 1px solid #f3f4f6;
             white-space: nowrap;
         }
         .data-table tr:hover {
@@ -1371,7 +1384,7 @@
 
                     <!-- 产品列表 -->
                     <div class="card">
-                        <div class="overflow-x-auto">
+                        <div class="table-scroll-container">
                             <table class="data-table">
                                 <thead>
                                     <tr>
@@ -1501,7 +1514,7 @@
 
                     <!-- 销售数据列表 -->
                     <div class="card">
-                        <div class="overflow-x-auto">
+                        <div class="table-scroll-container">
                             <table class="data-table">
                                 <thead>
                                     <tr>
