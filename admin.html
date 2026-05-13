@@ -1454,7 +1454,7 @@
                                     </div>
                                 </div>
                                 <div class="filter-item">
-                                    <label>类型：</label>
+                                    <label>订单渠道：</label>
                                     <select id="filterOrderType" onchange="applyOrderFilters()">
                                         <option value="">全部</option>
                                         <option value="线上订单">线上订单</option>
@@ -1533,7 +1533,7 @@
                                     <tr>
                                         <th>状态</th>
                                         <th>订单编号</th>
-                                        <th>订单类型</th>
+                                        <th>订单渠道</th>
                                         <th>购买日期</th>
                                         <th>类型</th>
                                         <th>商品名称</th>
@@ -1687,7 +1687,7 @@
                                 </select>
                             </div>
                             <div class="filter-item">
-                                <label>订单类型：</label>
+                                <label>订单渠道：</label>
                                 <select id="analyticsOrderType" onchange="renderAnalyticsData()">
                                     <option value="">全部</option>
                                     <option value="线上订单">线上订单</option>
@@ -2005,10 +2005,17 @@
                                 <input type="date" id="editPurchaseDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none">
                             </div>
                             <div>
-                                <label class="block text-gray-700 text-sm font-bold mb-2">类型</label>
-                                <select id="editOrderType" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none">
+                                <label class="block text-gray-700 text-sm font-bold mb-2">订单渠道</label>
+                                <select id="editSalesMethod" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none">
                                     <option value="线上订单">线上订单</option>
                                     <option value="货到付款">货到付款</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2">类型</label>
+                                <select id="editOrderType" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none">
+                                    <option value="内购">内购</option>
+                                    <option value="纯销">纯销</option>
                                 </select>
                             </div>
                             <div>
@@ -3081,7 +3088,7 @@
                     const itemForm = item.productForm || getProductForm(item.productName, item.productSpec);
                     
                     // 应用类型筛选
-                    if (filterOrderType && order.orderType !== filterOrderType) continue;
+                    if (filterOrderType && (order.salesMethod || '线上订单') !== filterOrderType) continue;
                     
                     // 应用录入人筛选
                     if (filterSalesPerson && order.salesPerson !== filterSalesPerson) continue;
@@ -3174,10 +3181,10 @@
                         <td class="px-4 py-3 text-sm">${getOrderStatusHtml(order)}</td>
                         <td class="px-4 py-3 text-sm font-medium text-gray-900">${order.orderNo}</td>
                         <td class="px-4 py-3 text-sm">
-                            <span class="px-2 py-1 text-xs rounded-full ${order.orderType === '货到付款' ? 'bg-orange-100 text-orange-700' : 'bg-blue-100 text-blue-700'}">${order.orderType}</span>
+                            <span class="px-2 py-1 text-xs rounded-full ${(order.salesMethod || '线上订单') === '货到付款' ? 'bg-orange-100 text-orange-700' : 'bg-purple-100 text-purple-700'}">${order.salesMethod || '线上订单'}</span>
                         </td>
                         <td class="px-4 py-3 text-sm text-gray-600">${order.purchaseDate}</td>
-                        </td>
+                        <td class="px-4 py-3 text-sm text-gray-600">${order.orderType}</td>
                         <td class="px-4 py-3 text-sm text-gray-600">${item.productName}</td>
                         <td class="px-4 py-3 text-sm text-gray-600">${itemForm}</td>
                         <td class="px-4 py-3 text-sm text-gray-600">${item.productSpec || '-'}</td>
@@ -4058,7 +4065,7 @@
                             <div class="flex-1">
                                 <div class="flex items-center gap-2 mb-2">
                                     <span class="font-semibold text-gray-900">${order.orderNo}</span>
-                                    <span class="px-2 py-0.5 text-xs rounded-full ${order.orderType === '货到付款' ? 'bg-orange-100 text-orange-700' : 'bg-blue-100 text-blue-700'}">${order.orderType}</span>
+                                    <span class="px-2 py-0.5 text-xs rounded-full ${(order.salesMethod || '线上订单') === '货到付款' ? 'bg-orange-100 text-orange-700' : 'bg-purple-100 text-purple-700'}">${order.salesMethod || '线上订单'}</span>
                                     <span class="px-2 py-0.5 text-xs rounded-full bg-gray-200 text-gray-600">已删除</span>
                                 </div>
                                 <div class="text-sm text-gray-500">
@@ -4193,8 +4200,8 @@
                 // 排除作废和退款
                 if (order.orderStatus === '作废' || order.orderStatus === '退款' || order.deletedAt) return false;
                 
-                // 订单类型筛选
-                if (orderTypeFilter && order.orderType !== orderTypeFilter) return false;
+                // 订单渠道筛选
+                if (orderTypeFilter && (order.salesMethod || '线上订单') !== orderTypeFilter) return false;
                 
                 // 产品类别筛选
                 if (categoryFilter) {
