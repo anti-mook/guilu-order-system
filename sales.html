@@ -2045,8 +2045,9 @@
             const savedUser = sessionStorage.getItem('currentUser');
             if (savedUser) {
                 currentUser = JSON.parse(savedUser);
-                // 先从云端拉最新数据，再显示主内容
-                DataSync.pull().then(() => showMainContent());
+                // 先显示页面，同时后台拉数据
+                showMainContent();
+                DataSync.pull();
             } else {
                 showLoginPage();
             }
@@ -2158,8 +2159,9 @@
                 document.getElementById('salesLoginAccount').value = '';
                 document.getElementById('salesLoginPassword').value = '';
                 document.getElementById('salesLoginError').classList.add('hidden');
-                // 先从云端拉最新数据，再显示主内容
-                DataSync.pull().then(() => showMainContent());
+                // 先显示页面，同时后台拉数据
+                showMainContent();
+                DataSync.pull();
             } else {
                 showLoginError('账号或密码错误');
             }
@@ -2402,7 +2404,16 @@
             specSelect.disabled = true;
             
             if (name) {
+                // 如果products为空，先从localStorage或云端拉数据
+                if (products.length === 0) {
+                    products = JSON.parse(localStorage.getItem('products') || '[]');
+                }
                 const forms = getFormsByProductName(name);
+                if (forms.length === 0 && products.length === 0) {
+                    // 仍然为空，提示用户
+                    formSelect.innerHTML = '<option value="">数据加载中，请稍后重试</option>';
+                    return;
+                }
                 formSelect.innerHTML = '<option value="">请选择</option>' + 
                     forms.map(f => `<option value="${f}">${f}</option>`).join('');
                 formSelect.disabled = false;
